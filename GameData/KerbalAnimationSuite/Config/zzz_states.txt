@@ -1,0 +1,225 @@
+[LOG 18:48:23.212] CurrentState: Idle (Grounded)
+[LOG 18:48:23.213] Type: KerbalFSM
+
+[LOG 18:48:23.213] State: Idle (Grounded) : FIXEDUPDATE
+[LOG 18:48:23.214] ----- Event: Move (Arcade): => Walk (Arcade) : FIXEDUPDATE
+[LOG 18:48:23.214] ----- Event: Move (FPS): => Walk (FPS) : FIXEDUPDATE
+[LOG 18:48:23.214] ----- Event: Move Low G (Arcade): => Low G Bound (Grounded - Arcade) : FIXEDUPDATE
+[LOG 18:48:23.215] ----- Event: Move Low G (FPS): => Low G Bound (Grounded - FPS) : FIXEDUPDATE
+[LOG 18:48:23.215] ----- Event: Jump Start: => Jumping : UPDATE
+[LOG 18:48:23.216] ----- Event: Fall: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.216] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.217] ----- Event: Pack Toggle: => N/A : UPDATE
+[LOG 18:48:23.217] ----- Event: Feet Wet: => N/A : UPDATE
+[LOG 18:48:23.217] ----- Event: Ladder Grab Start: => Ladder (Acquire) : UPDATE
+[LOG 18:48:23.218] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.218] ----- Event: Boarding Part: => N/A : UPDATE
+[LOG 18:48:23.219] ----- Event: Flag Plant Started: => Flag-plant Terrain Acquire : MANUAL_TRIGGER
+[LOG 18:48:23.219] ----- Event: Seat Board: => Seated (Command) : MANUAL_TRIGGER
+[LOG 18:48:23.220] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.220] State: Walk (Arcade) : FIXEDUPDATE
+[LOG 18:48:23.221] ----- Event: Hdg Acquire Start: => Turn to Heading : UPDATE
+[LOG 18:48:23.221] ----- Event: Move (FPS): => Walk (FPS) : FIXEDUPDATE
+[LOG 18:48:23.221] ----- Event: Start Run: => N/A : FIXEDUPDATE
+[LOG 18:48:23.222] ----- Event: Stop: => Idle (Grounded) : FIXEDUPDATE
+[LOG 18:48:23.222] ----- Event: Jump Start: => Jumping : UPDATE
+[LOG 18:48:23.223] ----- Event: Fall: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.223] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.224] ----- Event: Feet Wet: => N/A : UPDATE
+[LOG 18:48:23.224] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.224] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.225] State: Walk (FPS) : FIXEDUPDATE
+[LOG 18:48:23.225] ----- Event: Hdg Acquire Start: => Turn to Heading : UPDATE
+[LOG 18:48:23.226] ----- Event: Move (Arcade): => Walk (Arcade) : FIXEDUPDATE
+[LOG 18:48:23.226] ----- Event: Start Run: => N/A : FIXEDUPDATE
+[LOG 18:48:23.227] ----- Event: Stop: => Idle (Grounded) : FIXEDUPDATE
+[LOG 18:48:23.227] ----- Event: Jump Start: => Jumping : UPDATE
+[LOG 18:48:23.227] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.228] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.228] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.229] State: Turn to Heading : FIXEDUPDATE
+[LOG 18:48:23.229] ----- Event: Hdg Acquire Complete: => Idle (Grounded) : UPDATE
+[LOG 18:48:23.230] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.230] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.231] State: Run (Arcade) : FIXEDUPDATE
+[LOG 18:48:23.231] ----- Event: Hdg Acquire Start: => Turn to Heading : UPDATE
+[LOG 18:48:23.231] ----- Event: Move (FPS): => Walk (FPS) : FIXEDUPDATE
+[LOG 18:48:23.232] ----- Event: End Run: => N/A : FIXEDUPDATE
+[LOG 18:48:23.232] ----- Event: Stop: => Idle (Grounded) : FIXEDUPDATE
+[LOG 18:48:23.233] ----- Event: Jump Start: => Jumping : UPDATE
+[LOG 18:48:23.233] ----- Event: Fall: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.233] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.234] ----- Event: Feet Wet: => N/A : UPDATE
+[LOG 18:48:23.234] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.235] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.235] State: Run (FPS) : FIXEDUPDATE
+[LOG 18:48:23.235] ----- Event: Hdg Acquire Start: => Turn to Heading : UPDATE
+[LOG 18:48:23.236] ----- Event: End Run: => N/A : FIXEDUPDATE
+[LOG 18:48:23.236] ----- Event: Stop: => Idle (Grounded) : FIXEDUPDATE
+[LOG 18:48:23.237] ----- Event: Jump Start: => Jumping : UPDATE
+[LOG 18:48:23.237] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.238] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.238] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.238] State: Low G Bound (Grounded - Arcade) : FIXEDUPDATE
+[LOG 18:48:23.239] ----- Event: Hdg Acquire Start: => Turn to Heading : UPDATE
+[LOG 18:48:23.239] ----- Event: Move Low G (FPS): => Low G Bound (Grounded - FPS) : FIXEDUPDATE
+[LOG 18:48:23.240] ----- Event: Low G bound: => Low G Bound (floating) : UPDATE
+[LOG 18:48:23.240] ----- Event: Stop: => Idle (Grounded) : FIXEDUPDATE
+[LOG 18:48:23.241] ----- Event: Jump Start: => Jumping : UPDATE
+[LOG 18:48:23.241] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.242] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.242] State: Low G Bound (Grounded - FPS) : FIXEDUPDATE
+[LOG 18:48:23.242] ----- Event: Hdg Acquire Start: => Turn to Heading : UPDATE
+[LOG 18:48:23.243] ----- Event: Move Low G (Arcade): => Low G Bound (Grounded - Arcade) : FIXEDUPDATE
+[LOG 18:48:23.243] ----- Event: Low G bound: => Low G Bound (floating) : UPDATE
+[LOG 18:48:23.244] ----- Event: Stop: => Idle (Grounded) : FIXEDUPDATE
+[LOG 18:48:23.244] ----- Event: Jump Start: => Jumping : UPDATE
+[LOG 18:48:23.245] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.245] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.245] State: Low G Bound (floating) : FIXEDUPDATE
+[LOG 18:48:23.246] ----- Event: Low G bound land: => N/A : UPDATE
+[LOG 18:48:23.246] ----- Event: Low G Bound Fall: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.247] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.247] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.248] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.248] State: Ragdoll : FIXEDUPDATE
+[LOG 18:48:23.248] ----- Event: Recover Start: => Recover : FIXEDUPDATE
+[LOG 18:48:23.249] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.249] State: Recover : FIXEDUPDATE
+[LOG 18:48:23.250] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.250] ----- Event: Recover End: => N/A : UPDATE
+[LOG 18:48:23.251] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.251] State: Jumping : FIXEDUPDATE
+[LOG 18:48:23.251] ----- Event: Jump Launch: => Idle (Floating) : UPDATE
+[LOG 18:48:23.252] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.252] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.253] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.253] State: Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.253] ----- Event: Landing: => N/A : UPDATE
+[LOG 18:48:23.254] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.254] ----- Event: Pack Toggle: => N/A : UPDATE
+[LOG 18:48:23.255] ----- Event: Feet Wet: => N/A : UPDATE
+[LOG 18:48:23.255] ----- Event: Ladder Grab Start: => Ladder (Acquire) : UPDATE
+[LOG 18:48:23.255] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.256] ----- Event: Boarding Part: => N/A : UPDATE
+[LOG 18:48:23.256] ----- Event: Seat Board: => Seated (Command) : MANUAL_TRIGGER
+[LOG 18:48:23.257] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.257] State: Landing : FIXEDUPDATE
+[LOG 18:48:23.257] ----- Event: Landed: => Idle (Grounded) : UPDATE
+[LOG 18:48:23.258] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.258] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.259] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.259] State: Swim (Idle) : FIXEDUPDATE
+[LOG 18:48:23.260] ----- Event: Fall: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.260] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.260] ----- Event: Feet Dry: => N/A : UPDATE
+[LOG 18:48:23.261] ----- Event: Swim Forward: => Swim (fwd) : UPDATE
+[LOG 18:48:23.261] ----- Event: Ladder Grab Start: => Ladder (Acquire) : UPDATE
+[LOG 18:48:23.262] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.262] ----- Event: Boarding Part: => N/A : UPDATE
+[LOG 18:48:23.263] ----- Event: Seat Board: => Seated (Command) : MANUAL_TRIGGER
+[LOG 18:48:23.263] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.264] State: Swim (fwd) : FIXEDUPDATE
+[LOG 18:48:23.264] ----- Event: Fall: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.264] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.265] ----- Event: Feet Dry: => N/A : UPDATE
+[LOG 18:48:23.265] ----- Event: Swim Stop: => Swim (Idle) : UPDATE
+[LOG 18:48:23.266] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.266] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.266] State: Ladder (Acquire) : FIXEDUPDATE
+[LOG 18:48:23.267] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.267] ----- Event: Ladder Grab Complete: => Ladder (Idle) : UPDATE
+[LOG 18:48:23.268] ----- Event: Ladder End: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.268] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.269] State: Ladder (Idle) : UPDATE
+[LOG 18:48:23.269] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.269] ----- Event: Ladder Climb: => Ladder (Climb) : UPDATE
+[LOG 18:48:23.270] ----- Event: Ladder Descend: => Ladder (Descend) : UPDATE
+[LOG 18:48:23.270] ----- Event: Ladder Let Go: => Idle (Floating) : UPDATE
+[LOG 18:48:23.271] ----- Event: Ladder End: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.271] ----- Event: Ladder Lean (Start): => Ladder (Lean) : UPDATE
+[LOG 18:48:23.272] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.272] ----- Event: Boarding Part: => N/A : UPDATE
+[LOG 18:48:23.272] ----- Event: Seat Board: => Seated (Command) : MANUAL_TRIGGER
+[LOG 18:48:23.273] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.273] State: Ladder (Lean) : FIXEDUPDATE
+[LOG 18:48:23.274] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.274] ----- Event: Ladder End: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.275] ----- Event: Ladder Lean (End): => Ladder (Idle) : UPDATE
+[LOG 18:48:23.275] ----- Event: Ladder Push Off Start: => Ladder (Pushoff) : UPDATE
+[LOG 18:48:23.275] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.276] State: Ladder (Climb) : FIXEDUPDATE
+[LOG 18:48:23.276] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.277] ----- Event: Ladder Descend: => Ladder (Descend) : UPDATE
+[LOG 18:48:23.277] ----- Event: Ladder Stop: => Ladder (Idle) : UPDATE
+[LOG 18:48:23.277] ----- Event: Ladder Let Go: => Idle (Floating) : UPDATE
+[LOG 18:48:23.278] ----- Event: Ladder End: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.278] ----- Event: Clamber Grab Start: => Clamber (P1) : UPDATE
+[LOG 18:48:23.279] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.279] State: Ladder (Descend) : FIXEDUPDATE
+[LOG 18:48:23.280] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.280] ----- Event: Ladder Climb: => Ladder (Climb) : UPDATE
+[LOG 18:48:23.281] ----- Event: Ladder Stop: => Ladder (Idle) : UPDATE
+[LOG 18:48:23.281] ----- Event: Ladder Let Go: => Idle (Floating) : UPDATE
+[LOG 18:48:23.281] ----- Event: Ladder End: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.282] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.282] State: Ladder (Pushoff) : FIXEDUPDATE
+[LOG 18:48:23.283] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.283] ----- Event: Ladder Push Off Complete: => Idle (Floating) : FIXEDUPDATE
+[LOG 18:48:23.284] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.284] State: Clamber (P1) : FIXEDUPDATE
+[LOG 18:48:23.284] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.285] ----- Event: Clamber Reach P1: => Clamber (P2) : UPDATE
+[LOG 18:48:23.285] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.286] State: Clamber (P2) : FIXEDUPDATE
+[LOG 18:48:23.286] ----- Event: Clamber Reach P2: => Clamber (P3) : UPDATE
+[LOG 18:48:23.287] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.287] State: Clamber (P3) : FIXEDUPDATE
+[LOG 18:48:23.287] ----- Event: Clamber Reach P3: => Idle (Grounded) : UPDATE
+[LOG 18:48:23.288] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.288] State: Flag-plant Terrain Acquire : FIXEDUPDATE
+[LOG 18:48:23.289] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.289] ----- Event: Flag Plant Heading Acquired: => Planting Flag : FIXEDUPDATE
+[LOG 18:48:23.289] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.290] State: Planting Flag : FIXEDUPDATE
+[LOG 18:48:23.290] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.291] ----- Event: Flag Plant Complete: => Idle (Grounded) : UPDATE
+[LOG 18:48:23.291] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.292] State: Seated (Command) : FIXEDUPDATE
+[LOG 18:48:23.292] ----- Event: Stumble: => Ragdoll : MANUAL_TRIGGER
+[LOG 18:48:23.293] ----- Event: Seat Deboard: => Idle (Floating) : MANUAL_TRIGGER
+[LOG 18:48:23.293] ----- Event: Seat Eject: => Ragdoll : LATEUPDATE
+[LOG 18:48:23.293] ----- Event: Grapple: => Grappled : MANUAL_TRIGGER
+
+[LOG 18:48:23.294] State: Grappled : FIXEDUPDATE
+[LOG 18:48:23.294] ----- Event: Grapple Release: => Ragdoll : LATEUPDATE
+
+
+
