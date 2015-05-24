@@ -118,6 +118,7 @@ namespace KerbalAnimation
 			}
 			else
 			{
+				Button.SetFalse (false);
 				ScreenMessages.PostScreenMessage (new ScreenMessage("Kerbal must be standing on ground to animate", 2.5f, ScreenMessageStyle.UPPER_CENTER), false);
 				eva = null;
 				evaPart = null;
@@ -627,12 +628,14 @@ namespace KerbalAnimation
 
 		string loadAnimErrorText = "";
 		string tempSavePath = "";
+		string saveAnimErrorText = "";
 
 		int animPage = 0;
 		int animPageCount = 2;
 		void AnimationWindow(int id)
 		{
-			//TODO: make it so that dragging the arrow indicator changes the animation time
+			//TODO: add tangent controls
+			//TODO: add sanity checks for saving/loading
 
 			switch(animPage)
 			{
@@ -744,7 +747,10 @@ namespace KerbalAnimation
 					{
 						GUILayout.Space (60f);
 
+						GUILayout.BeginHorizontal ();
+						GUILayout.Label ("Load from: <color=white>/GameData/</color>");
 						loadPath = GUILayout.TextField (loadPath);
+						GUILayout.EndHorizontal ();
 						if (GUILayout.Button ("Load Animation"))
 						{
 							try
@@ -752,6 +758,7 @@ namespace KerbalAnimation
 								KAS_AnimationClip clip = new KAS_AnimationClip();
 								clip.LoadURL(loadPath);
 								animationClip = clip;
+								loadAnimErrorText = "";
 							}
 							catch
 							{
@@ -855,12 +862,24 @@ namespace KerbalAnimation
 				GUILayout.Space (5f);
 
 				GUILayout.BeginHorizontal ();
-				GUILayout.Label ("Folder: ");
+				GUILayout.Label ("Save to: <color=white>/GameData/</color>");
 				tempSavePath = GUILayout.TextField (tempSavePath);
 				GUILayout.EndHorizontal ();
 				if (GUILayout.Button ("Save Animation"))
 				{
-					animationClip.Save (tempSavePath);
+					try
+					{
+						animationClip.Save (tempSavePath);
+						saveAnimErrorText = "";
+					}
+					catch
+					{
+						saveAnimErrorText = "couldn't save animation to " + tempSavePath;
+					}
+				}
+				if(saveAnimErrorText != null && saveAnimErrorText != "")
+				{
+					GUILayout.Label ("<color=red>" + saveAnimErrorText + "</color>");
 				}
 
 				GUILayout.EndScrollView ();

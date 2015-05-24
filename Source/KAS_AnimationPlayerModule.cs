@@ -11,13 +11,15 @@ namespace KerbalAnimation
 	{
 		void Start()
 		{
-			AddModule ("kerbalEVA", typeof(KAS_AnimationPlayerModule).Name);
-			AddModule ("kerbalEVAfemale", typeof(KAS_AnimationPlayerModule).Name);
+			AddModule ("kerbalEVA", "KAS_AnimationPlayerModule");
+			AddModule ("kerbalEVAfemale", "KAS_AnimationPlayerModule");
 		}
 
 
 		void AddModule(string partName, string moduleName)
 		{
+			Debug.Log ("Adding" + moduleName + " to part " + partName);
+
 			foreach (var aPart in PartLoader.LoadedPartsList)
 			{
 				if (aPart.name != partName)
@@ -28,6 +30,7 @@ namespace KerbalAnimation
 					aPart.partPrefab.AddModule (moduleName);
 				}
 				catch {}
+				Debug.Log ("Added" + moduleName + " to part " + partName + " successfully");
 			}
 		}
 	}
@@ -46,6 +49,11 @@ namespace KerbalAnimation
 		private bool animationsLoaded = false;
 
 		private List<KAS_AnimationClip> Animations = new List<KAS_AnimationClip> ();
+
+		public override void OnStart (StartState state)
+		{
+			Debug.Log ("Starting KAS_AnimationPlayerModule: " + state.ToString ());
+		}
 
 		public override void OnUpdate()
 		{
@@ -67,33 +75,31 @@ namespace KerbalAnimation
 		[KSPEvent(guiName = "Play Animation", guiActive = false, guiActiveUnfocused = false, externalToEVAOnly = false)]
 		public void PlayAnimation()
 		{
+			Debug.Log ("Playing Animation...");
 			if (animation [SelectedAnimationName] != null)
 			{
-				StartCoroutine (PlayAnimationOnce (SelectedAnimationName));
+				PlayAnimationOnce (SelectedAnimationName);
 			}
 			else
 			{
 				ScreenMessages.PostScreenMessage ("<color=red>Animation " + SelectedAnimationName + " does not exist</color>");
 			}
 		}
-		IEnumerator<YieldInstruction> PlayAnimationOnce(string name)
+		public void PlayAnimationOnce(string name)
 		{
 			var state = animation [SelectedAnimationName];
-			state.layer = 5;
+			state.wrapMode = WrapMode.Once;
 			animation.CrossFade (SelectedAnimationName, 0.22f * state.length, PlayMode.StopSameLayer);
-			state.normalizedTime = 0f;
-
-			yield return new WaitForSeconds (state.length);
-
-			animation.Stop (name);
 		}
 
 		[KSPEvent(guiName = "Load Animations", guiActive = false, guiActiveUnfocused = false, externalToEVAOnly = false)]
 		public void ReloadAnimations()
 		{
+			Debug.Log ("Loading Animations...");
+
 			Animations.Clear ();
 
-			foreach(var file in Directory.GetFiles(KSPUtil.ApplicationRootPath + "GameData" + Path.DirectorySeparatorChar, "*.anim", SearchOption.AllDirectories))
+			foreach(var file in Directory.GetFiles(KSPUtil.ApplicationRootPath + "GameData/", "*.anim", SearchOption.AllDirectories))
 			{
 				Debug.Log ("Loading " + file);
 				KAS_AnimationClip clip = new KAS_AnimationClip ();
@@ -109,6 +115,7 @@ namespace KerbalAnimation
 			foreach (var anim in Animations)
 			{
 				anim.Initialize (animation, part.transform);
+				animation [anim.Name].layer = 5;
 				names.Add (anim.Name);
 			}
 			if (Fields ["SelectedAnimation"].uiControlFlight is UI_Cycle)

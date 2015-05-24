@@ -260,7 +260,7 @@ namespace KerbalAnimation
 
 		public void Save(string savePath = "")
 		{
-			string folderPath = KSPUtil.ApplicationRootPath + "GameData/KerbalAnimationSuite/" + savePath + "/";
+			string folderPath = KSPUtil.ApplicationRootPath + "GameData/" + savePath + "/";
 			string fileName = Name;
 
 			int v = 0;
@@ -334,10 +334,12 @@ namespace KerbalAnimation
 
 		public void LoadURL(string url)
 		{
-			this.Load (KSPUtil.ApplicationRootPath + "GameData/KerbalAnimationSuite/" + url);
+			Debug.Log ("Loading animation from URL " + url);
+			this.Load (KSPUtil.ApplicationRootPath + "GameData/" + url);
 		}
 		public void Load(string fullPath)
 		{
+			Debug.Log ("Loading animation from " + fullPath);
 			ConfigNode node = ConfigNode.Load (fullPath +  (fullPath.EndsWith(".anim") ? "" : ".anim") );
 			Name = node.GetValue ("Name");
 			Duration = float.Parse(node.GetValue ("Duration"));
