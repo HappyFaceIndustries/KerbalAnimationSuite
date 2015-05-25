@@ -53,16 +53,32 @@ namespace KerbalAnimation
 		public override void OnStart (StartState state)
 		{
 			Debug.Log ("Starting KAS_AnimationPlayerModule: " + state.ToString ());
+
+			ReloadAnimations ();
 		}
 
 		public override void OnUpdate()
 		{
 			if (KerbalAnimationSuite.Instance != null)
 			{
-				bool isAnimating = KerbalAnimationSuite.IsAnimating;
+				bool isAnimating = KerbalAnimationSuite.Instance.isAnimating;
 				Events ["PlayAnimation"].active = !isAnimating && animationsLoaded;
 				Events ["ReloadAnimations"].active = !isAnimating;
 				Fields ["SelectedAnimation"].guiActive = !isAnimating && animationsLoaded;
+
+				if (animationsLoaded)
+				{
+					for (var i = 0; i < Animations.Count; i++)
+					{
+						if (i > 9)
+							continue;
+						var animName = Animations [i].Name;
+						if (Input.GetKeyDown ((i + 1).ToString ()))
+						{
+							PlayAnimationOnce (animName);
+						}
+					}
+				}
 			}
 			else
 			{
@@ -72,7 +88,7 @@ namespace KerbalAnimation
 			}
 		}
 
-		[KSPEvent(guiName = "Play Animation", guiActive = false, guiActiveUnfocused = false, externalToEVAOnly = false)]
+		[KSPEvent(guiName = "Play Animation", guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false)]
 		public void PlayAnimation()
 		{
 			Debug.Log ("Playing Animation...");
@@ -87,12 +103,14 @@ namespace KerbalAnimation
 		}
 		public void PlayAnimationOnce(string name)
 		{
-			var state = animation [SelectedAnimationName];
+			var state = animation [name];
+			if (state == null || animation.GetClip(name) == null)
+				return;
 			state.wrapMode = WrapMode.Once;
-			animation.CrossFade (SelectedAnimationName, 0.22f * state.length, PlayMode.StopSameLayer);
+			animation.CrossFade (name, 0.22f * state.length, PlayMode.StopSameLayer);
 		}
 
-		[KSPEvent(guiName = "Load Animations", guiActive = false, guiActiveUnfocused = false, externalToEVAOnly = false)]
+		[KSPEvent(guiName = "Reload Animations", guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false)]
 		public void ReloadAnimations()
 		{
 			Debug.Log ("Loading Animations...");
@@ -126,8 +144,6 @@ namespace KerbalAnimation
 				SelectedAnimation = 0;
 			}
 			animationsLoaded = true;
-
-			Events["ReloadAnimations"].guiName = "Reload Animations";
 		}
 	}
 }

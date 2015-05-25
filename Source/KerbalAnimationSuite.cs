@@ -229,7 +229,7 @@ namespace KerbalAnimation
 					animationWindowRect = GUILayout.Window ("KerbalAnimationSuite_Animation".GetHashCode (), animationWindowRect, AnimationWindow, "Animation");
 			}
 		}
-		bool isAnimating = false;
+		public bool isAnimating = false;
 
 		bool hierarchy = true;
 		bool manipulation = true;
