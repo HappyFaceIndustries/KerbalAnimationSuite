@@ -54,7 +54,14 @@ namespace KerbalAnimation
 		{
 			Debug.Log ("Starting KAS_AnimationPlayerModule: " + state.ToString ());
 
-			ReloadAnimations ();
+			try
+			{
+				ReloadAnimations ();
+			}
+			catch(Exception e)
+			{
+				Debug.LogException (e);
+			}
 		}
 
 		public override void OnUpdate()
@@ -73,10 +80,13 @@ namespace KerbalAnimation
 						if (i > 9)
 							continue;
 						var animName = Animations [i].Name;
-						if (Input.GetKeyDown ((i + 1).ToString ()))
+						if (FlightGlobals.ActiveVessel == vessel)
 						{
-							PlayAnimationOnce (animName);
+							if (Input.GetKeyDown ((i + 1).ToString ()))
+								PlayAnimationOnce (animName);
 						}
+						if (GameSettings.MODIFIER_KEY.GetKey() && Input.GetKeyDown ((i + 1).ToString ()))
+							PlayAnimationOnce (animName);
 					}
 				}
 			}
@@ -113,8 +123,6 @@ namespace KerbalAnimation
 		[KSPEvent(guiName = "Reload Animations", guiActive = true, guiActiveUnfocused = false, externalToEVAOnly = false)]
 		public void ReloadAnimations()
 		{
-			Debug.Log ("Loading Animations...");
-
 			Animations.Clear ();
 
 			foreach(var file in Directory.GetFiles(KSPUtil.ApplicationRootPath + "GameData/", "*.anim", SearchOption.AllDirectories))
@@ -132,7 +140,7 @@ namespace KerbalAnimation
 			List<string> names = new List<string> ();
 			foreach (var anim in Animations)
 			{
-				anim.Initialize (animation, part.transform);
+				anim.Initialize (animation, transform);
 				animation [anim.Name].layer = 5;
 				names.Add (anim.Name);
 			}

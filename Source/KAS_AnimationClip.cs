@@ -1,132 +1,74 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace KerbalAnimation
 {
-	public class KAS_Keyframe
+	/// <summary>
+	/// Utility methods for manipulating kerbals
+	/// </summary>
+	public static class KerbalEVA_Utility
 	{
-		public KAS_Keyframe(KAS_AnimationClip animClip)
+		public static List<KFSMState> GetEVAStates(KerbalEVA eva)
 		{
-			this.clip = animClip;
+			var fsm = eva.fsm;
+
+			var type = fsm.GetType();
+			var statesF = type.GetField ("States", BindingFlags.NonPublic | BindingFlags.Instance);
+			List<KFSMState> states = (List<KFSMState>)statesF.GetValue (fsm);
+			return states;
 		}
-
-		KAS_AnimationClip clip;
-		public float NormalizedTime = 0f;
-		public float Time
+		public static List<KFSMEvent> GetEVAEvents(KerbalEVA eva, List<KFSMState> states)
 		{
-			get{return NormalizedTime * clip.Duration;}
-		}
-
-		Dictionary<string, float> RotationW = new Dictionary<string, float>();
-		Dictionary<string, float> RotationX = new Dictionary<string, float>();
-		Dictionary<string, float> RotationY = new Dictionary<string, float>();
-		Dictionary<string, float> RotationZ = new Dictionary<string, float>();
-
-		Dictionary<string, float> PositionX = new Dictionary<string, float>();
-		Dictionary<string, float> PositionY = new Dictionary<string, float>();
-		Dictionary<string, float> PositionZ = new Dictionary<string, float>();
-
-		public void Write(Transform transform, float time)
-		{
-			this.Clear ();
-			this.NormalizedTime = time;
-			foreach (string name in KerbalAnimationSuite.AnimationNames.Values)
+			List<KFSMEvent> events = new List<KFSMEvent> ();
+			foreach (var state in states)
 			{
-				Transform t = transform.Find (name);
-				if (t == null)
-					Debug.LogError ("t is null at " + name);
-				Quaternion quatRot = t.localRotation;
-				RotationW.Add(name, quatRot.w);
-				RotationX.Add(name, quatRot.x);
-				RotationY.Add(name, quatRot.y);
-				RotationZ.Add(name, quatRot.z);
-
-				Vector3 localPos = t.localPosition;
-				PositionX.Add(name, localPos.x);
-				PositionY.Add(name, localPos.y);
-				PositionZ.Add(name, localPos.z);
+				events.AddRange ( state.StateEvents.Where(e => !events.Contains(e)) );
+			}
+			return events;
+		}
+		public static void RunEvent(this KerbalEVA eva, string name)
+		{
+			foreach (var kfsme in eva.fsm.CurrentState.StateEvents)
+			{
+				if (kfsme.name == name)
+					eva.fsm.RunEvent (kfsme);
+				else
+					Debug.LogError ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]:" + "Event " + name + " not found");
 			}
 		}
-		public void Clear()
+		public static void RunEvent(this KerbalFSM fsm, string name)
 		{
-			RotationW.Clear ();
-			RotationX.Clear ();
-			RotationY.Clear ();
-			RotationZ.Clear ();
-			PositionX.Clear ();
-			PositionY.Clear ();
-			PositionZ.Clear ();
-			this.NormalizedTime = 0f;
-		}
-		public void SetValue(float value, string animationName, KAS_ValueType type)
-		{
-			switch (type)
+			foreach (var kfsme in fsm.CurrentState.StateEvents)
 			{
-			case KAS_ValueType.RotW:
-				RotationW [animationName] = value;
-				break;
-			case KAS_ValueType.RotX:
-				RotationX [animationName] = value;
-				break;
-			case KAS_ValueType.RotY:
-				RotationY [animationName] = value;
-				break;
-			case KAS_ValueType.RotZ:
-				RotationZ [animationName] = value;
-				break;
-			case KAS_ValueType.PosX:
-				PositionX [animationName] = value;
-				break;
-			case KAS_ValueType.PosY:
-				PositionY [animationName] = value;
-				break;
-			case KAS_ValueType.PosZ:
-				PositionZ [animationName] = value;
-				break;
-			default:
-				break;
-			}
-		}
-		public float GetValue(string animationName, KAS_ValueType type)
-		{
-			switch (type)
-			{
-			case KAS_ValueType.RotW:
-				return RotationW [animationName];
-			case KAS_ValueType.RotX:
-				return RotationX [animationName];
-			case KAS_ValueType.RotY:
-				return RotationY [animationName];
-			case KAS_ValueType.RotZ:
-				return RotationZ [animationName];
-			case KAS_ValueType.PosX:
-				return PositionX [animationName];
-			case KAS_ValueType.PosY:
-				return PositionY [animationName];
-			case KAS_ValueType.PosZ:
-				return PositionZ [animationName];
-			default:
-				return 0f;
+				if (kfsme.name == name)
+					fsm.RunEvent (kfsme);
+				else
+					Debug.LogError ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]:" + "Event " + name + " not found");
 			}
 		}
 	}
-	public enum KAS_ValueType
-	{
-		RotW, RotX, RotY, RotZ, PosX, PosY, PosZ
-	}
 
-
-
+	/// <summary>
+	/// KerbalAnimationSuite animation clip.
+	/// </summary>
 	public class KAS_AnimationClip
 	{
-		//TODO: add into the KFSM system, with KFSMEvents and KFSMStates
-		//TODO: make configurable with configs
+		public static implicit operator string (KAS_AnimationClip clip)
+		{
+			return clip.Name;
+		}
+		public static implicit operator AnimationClip (KAS_AnimationClip clip)
+		{
+			return clip.clip;
+		}
 
 		public string Name = "CustomClip";
+		public int Layer = 0;
 
 		public AnimationClip clip;
 		public float Duration
@@ -166,18 +108,16 @@ namespace KerbalAnimation
 		}
 		public void RemoveMixingTransform(string name)
 		{
-			if(MixingTransforms.Contains(name))
+			if (MixingTransforms.Contains (name))
 				MixingTransforms.Remove (name);
 		}
-
-		public int Layer = 0;
 
 		public void CreateKeyframe(Transform transform, float time)
 		{
 			var keyframe = new KAS_Keyframe (this);
 			keyframe.Write (transform, time);
 			Keyframes.Add (keyframe);
-			Debug.Log ("Created Keyframe! " + time);
+			Debug.Log ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]:" + "Created Keyframe! " + time);
 		}
 		public void ReorderKeyframes()
 		{
@@ -242,22 +182,34 @@ namespace KerbalAnimation
 			return clip;
 		}
 
-
+		/// <summary>
+		/// Initialize the animation clip in the kerbal part.
+		/// </summary>
+		/// <param name="animation">The Animation object to be used. Should be the animation property of any PartModule attached to a kerbalEVA/kerbalEVAfemale part</param>
+		/// <param name="transform">The Transform object to be used as the skeleton. Should be the transform property of any PartModule attached to a kerbalEVA/kerbalEVAfemale part</param>
 		public void Initialize(Animation animation, Transform transform)
 		{
-			Debug.Log ("Rebuilding clip");
+			Debug.Log ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]:" + "Rebuilding clip");
 			var clip = BuildAnimationClip ();
 			animation.RemoveClip (Name);
 			animation.AddClip (clip, Name);
+			//animation [Name].layer = Layer;
 			foreach(var mt in MixingTransforms)
 			{
-				animation [Name].AddMixingTransform (transform.Find(KerbalAnimationSuite.AnimationNames [mt]));
+				if (/*KerbalAnimationSuite_Loader.AnimationNames.ContainsKey(mt) && transform.Find (KerbalAnimationSuite_Loader.AnimationNames [mt]) != null*/transform != null)
+					animation [Name].AddMixingTransform (transform.Find (KerbalAnimationSuite.AnimationNames [mt]));
+				else
+					Debug.LogError ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]: animation mixing transform " + mt + " from animation " + Name + " does not exist, or could not be found.");
 			}
 		}
 
 
 		public const int FileTypeVersion = 1;
 
+		/// <summary>
+		/// Save the animation clip to a .anim file
+		/// </summary>
+		/// <param name="savePath">Path to save animation file relative to GameData folder</param>
 		public void Save(string savePath = "")
 		{
 			string folderPath = KSPUtil.ApplicationRootPath + "GameData/" + savePath + "/";
@@ -272,7 +224,7 @@ namespace KerbalAnimation
 
 			string path = folderPath + fileName + ".anim";
 
-			Debug.Log ("Saving animation " + Name + " to " + path);
+			Debug.Log ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]:" + "Saving animation " + Name + " to " + path);
 
 			ConfigNode node = new ConfigNode ("KAS_Animation");
 			node.AddValue ("FileTypeVersion", FileTypeVersion);
@@ -314,7 +266,7 @@ namespace KerbalAnimation
 
 			node.Save (path, "Saved " + DateTime.Now.ToString());
 		}
-		public void OptimizeKeyframeNode(ConfigNode keyframe)
+		private void OptimizeKeyframeNode(ConfigNode keyframe)
 		{
 			foreach (string animationName in KerbalAnimationSuite.AnimationNames.Values)
 			{
@@ -332,58 +284,222 @@ namespace KerbalAnimation
 			}
 		}
 
+		/// <summary>
+		/// Loads an animation file from a URL relative to the /GameData/ folder. Does not require an extension in the url.
+		/// </summary>
+		/// <param name="url">The URL to load from</param>
 		public void LoadURL(string url)
 		{
-			Debug.Log ("Loading animation from URL " + url);
+			Debug.Log ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]:" + "Loading animation from URL " + url);
 			this.Load (KSPUtil.ApplicationRootPath + "GameData/" + url);
 		}
+		/// <summary>
+		/// Loads an animation using it's full path.
+		/// </summary>
+		/// <param name="fullPath">The full path of the file.</param>
 		public void Load(string fullPath)
 		{
-			Debug.Log ("Loading animation from " + fullPath);
-			ConfigNode node = ConfigNode.Load (fullPath +  (fullPath.EndsWith(".anim") ? "" : ".anim") );
-			Name = node.GetValue ("Name");
-			Duration = float.Parse(node.GetValue ("Duration"));
-
-			ConfigNode mtNode = node.GetNode ("MIXING_TRANSFORMS");
-			foreach (var mt in mtNode.GetValues("MixingTransform"))
+			Debug.Log ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]:" + "Loading animation from " + fullPath);
+			try
 			{
-				AddMixingTransform (mt);
-			}
+				ConfigNode node = ConfigNode.Load (fullPath +  (fullPath.EndsWith(".anim") ? "" : ".anim") );
+				Name = node.GetValue ("Name");
+				Duration = float.Parse(node.GetValue ("Duration"));
 
-			ConfigNode keyframesNode = node.GetNode ("KEYFRAMES");
-			foreach (var keyframeNode in keyframesNode.GetNodes("KEYFRAME"))
-			{
-				KAS_Keyframe keyframe = new KAS_Keyframe (this);
-				keyframe.NormalizedTime = float.Parse (keyframeNode.GetValue ("NormalizedTime"));
-
-				foreach (string animationName in KerbalAnimationSuite.AnimationNames.Values)
+				ConfigNode mtNode = node.GetNode ("MIXING_TRANSFORMS");
+				foreach (var mt in mtNode.GetValues("MixingTransform"))
 				{
-					if (!keyframeNode.HasValue (animationName))
-						continue;
-
-					string allValues = keyframeNode.GetValue (animationName);
-					string[] values = allValues.Split (' ');
-
-					float rotW = float.Parse (values [0]);
-					float rotX = float.Parse (values [1]);
-					float rotY = float.Parse (values [2]);
-					float rotZ = float.Parse (values [3]);
-					float posX = float.Parse (values [4]);
-					float posY = float.Parse (values [5]);
-					float posZ = float.Parse (values [6]);
-
-					keyframe.SetValue (rotW, animationName, KAS_ValueType.RotW);
-					keyframe.SetValue (rotX, animationName, KAS_ValueType.RotX);
-					keyframe.SetValue (rotY, animationName, KAS_ValueType.RotY);
-					keyframe.SetValue (rotZ, animationName, KAS_ValueType.RotZ);
-					keyframe.SetValue (posX, animationName, KAS_ValueType.PosX);
-					keyframe.SetValue (posY, animationName, KAS_ValueType.PosY);
-					keyframe.SetValue (posZ, animationName, KAS_ValueType.PosZ);
+					AddMixingTransform (mt);
 				}
 
-				Keyframes.Add (keyframe);
+				ConfigNode keyframesNode = node.GetNode ("KEYFRAMES");
+				foreach (var keyframeNode in keyframesNode.GetNodes("KEYFRAME"))
+				{
+					KAS_Keyframe keyframe = new KAS_Keyframe (this);
+					keyframe.NormalizedTime = float.Parse (keyframeNode.GetValue ("NormalizedTime"));
+
+					foreach (string animationName in KerbalAnimationSuite.AnimationNames.Values)
+					{
+						if (!keyframeNode.HasValue (animationName))
+							continue;
+
+						string allValues = keyframeNode.GetValue (animationName);
+						string[] values = allValues.Split (' ');
+
+						float rotW = float.Parse (values [0]);
+						float rotX = float.Parse (values [1]);
+						float rotY = float.Parse (values [2]);
+						float rotZ = float.Parse (values [3]);
+						float posX = float.Parse (values [4]);
+						float posY = float.Parse (values [5]);
+						float posZ = float.Parse (values [6]);
+
+						keyframe.SetValue (rotW, animationName, KAS_ValueType.RotW);
+						keyframe.SetValue (rotX, animationName, KAS_ValueType.RotX);
+						keyframe.SetValue (rotY, animationName, KAS_ValueType.RotY);
+						keyframe.SetValue (rotZ, animationName, KAS_ValueType.RotZ);
+						keyframe.SetValue (posX, animationName, KAS_ValueType.PosX);
+						keyframe.SetValue (posY, animationName, KAS_ValueType.PosY);
+						keyframe.SetValue (posZ, animationName, KAS_ValueType.PosZ);
+					}
+
+					Keyframes.Add (keyframe);
+				}
+			}
+			catch(KeyNotFoundException e)
+			{
+				Debug.LogError ("ERROR ENCOUNTERED LOADING ANIMATION");
+				Debug.LogException (e);
+			}
+			finally
+			{
+				Debug.Log ("finally was hit <-- this is not a bad message");
 			}
 		}
+	}
+
+	/// <summary>
+	/// Keyframe of a KerbalAnimationSuite animation clip (KAS_AnimationClip)
+	/// </summary>
+	public class KAS_Keyframe
+	{
+		public KAS_Keyframe(KAS_AnimationClip animClip)
+		{
+			this.clip = animClip;
+		}
+
+		/// <summary>
+		/// The animation clip this keyframe is attached to.
+		/// </summary>
+		KAS_AnimationClip clip;
+		/// <summary>
+		/// The normalized time of this keyframe.
+		/// </summary>
+		public float NormalizedTime = 0f;
+		/// <summary>
+		/// Gets the time in seconds that this keyframe happens at.
+		/// </summary>
+		public float Time
+		{
+			get{return NormalizedTime * clip.Duration;}
+		}
+
+		Dictionary<string, float> RotationW = new Dictionary<string, float>();
+		Dictionary<string, float> RotationX = new Dictionary<string, float>();
+		Dictionary<string, float> RotationY = new Dictionary<string, float>();
+		Dictionary<string, float> RotationZ = new Dictionary<string, float>();
+
+		Dictionary<string, float> PositionX = new Dictionary<string, float>();
+		Dictionary<string, float> PositionY = new Dictionary<string, float>();
+		Dictionary<string, float> PositionZ = new Dictionary<string, float>();
+
+		public void Write(Transform transform, float time)
+		{
+			this.Clear ();
+			this.NormalizedTime = time;
+			foreach (string name in KerbalAnimationSuite.AnimationNames.Values)
+			{
+				Transform t = transform.Find (name);
+				if (t == null)
+					Debug.LogError ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]:" + "t is null at " + name);
+				Quaternion quatRot = t.localRotation;
+				RotationW.Add(name, quatRot.w);
+				RotationX.Add(name, quatRot.x);
+				RotationY.Add(name, quatRot.y);
+				RotationZ.Add(name, quatRot.z);
+
+				Vector3 localPos = t.localPosition;
+				PositionX.Add(name, localPos.x);
+				PositionY.Add(name, localPos.y);
+				PositionZ.Add(name, localPos.z);
+			}
+		}
+		/// <summary>
+		/// Clears this keyframe.
+		/// </summary>
+		public void Clear()
+		{
+			RotationW.Clear ();
+			RotationX.Clear ();
+			RotationY.Clear ();
+			RotationZ.Clear ();
+			PositionX.Clear ();
+			PositionY.Clear ();
+			PositionZ.Clear ();
+			this.NormalizedTime = 0f;
+		}
+		/// <summary>
+		/// Sets the value.
+		/// </summary>
+		/// <param name="value">The float value to set it to.</param>
+		/// <param name="animationName">the animation name of the bone you wish to edit.</param>
+		/// <param name="type">Which value you wish to set.</param>
+		public void SetValue(float value, string animationName, KAS_ValueType type)
+		{
+			switch (type)
+			{
+			case KAS_ValueType.RotW:
+				RotationW [animationName] = value;
+				break;
+			case KAS_ValueType.RotX:
+				RotationX [animationName] = value;
+				break;
+			case KAS_ValueType.RotY:
+				RotationY [animationName] = value;
+				break;
+			case KAS_ValueType.RotZ:
+				RotationZ [animationName] = value;
+				break;
+			case KAS_ValueType.PosX:
+				PositionX [animationName] = value;
+				break;
+			case KAS_ValueType.PosY:
+				PositionY [animationName] = value;
+				break;
+			case KAS_ValueType.PosZ:
+				PositionZ [animationName] = value;
+				break;
+			default:
+				break;
+			}
+		}
+
+		/// <summary>
+		/// Gets a value of the bone animationName. Similar to SetValue
+		/// </summary>
+		/// <returns>The value.</returns>
+		/// <param name="animationName">Animation name.</param>
+		/// <param name="type">Type.</param>
+		public float GetValue(string animationName, KAS_ValueType type)
+		{
+			switch (type)
+			{
+			case KAS_ValueType.RotW:
+				return RotationW [animationName];
+			case KAS_ValueType.RotX:
+				return RotationX [animationName];
+			case KAS_ValueType.RotY:
+				return RotationY [animationName];
+			case KAS_ValueType.RotZ:
+				return RotationZ [animationName];
+			case KAS_ValueType.PosX:
+				return PositionX [animationName];
+			case KAS_ValueType.PosY:
+				return PositionY [animationName];
+			case KAS_ValueType.PosZ:
+				return PositionZ [animationName];
+			default:
+				return 0f;
+			}
+		}
+	}
+
+	/// <summary>
+	/// An enumeration of values for use with KAS_Keyframes
+	/// </summary>
+	public enum KAS_ValueType
+	{
+		RotW, RotX, RotY, RotZ, PosX, PosY, PosZ
 	}
 }
 

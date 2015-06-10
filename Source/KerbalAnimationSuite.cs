@@ -27,8 +27,14 @@ namespace KerbalAnimation
 			Instance = this;
 		}
 
+		static bool debug = false;
+
 		void Start()
 		{
+			debug = Environment.GetCommandLineArgs ().Contains ("-debug-ksp");
+			if (debug)
+				Debug.Log ("Debug is enabled!");
+
 			if (!hasAddedButton)
 			{
 				AddApp ();
@@ -39,7 +45,7 @@ namespace KerbalAnimation
 			LoadReadableNames (readableNamesNode);
 			Debug.Log ("ReadableNamesCount: " + ReadableNames != null ? ReadableNames.Count.ToString() : "NaN");
 
-			LoadAnimationNames ("KerbalAnimationSuite/Config/animation_hierarchy");
+			LoadAnimationNames ();
 
 			GameEvents.onShowUI.Add (ShowUI);
 			GameEvents.onHideUI.Add (HideUI);
@@ -78,15 +84,10 @@ namespace KerbalAnimation
 
 			eva = vessel.evaController;
 			evaPart = eva.part;
-			//PrintFSM ();
-
-			if (eva.isRagdoll)
+			if (debug)
 			{
-				Button.SetFalse (false);
-				ScreenMessages.PostScreenMessage (new ScreenMessage("Kerbal must be standing on ground to animate", 2.5f, ScreenMessageStyle.UPPER_CENTER), false);
-				eva = null;
-				evaPart = null;
-				return;
+				PrintFSM ();
+				PrintAnimationStates ();
 			}
 
 			RebuildAnimationClip ();
@@ -135,15 +136,8 @@ namespace KerbalAnimation
 			}
 
 			joints01 = evaPart.transform.Find("globalMove01/joints01");
-			PopulateAnimationNames ();
-			SaveAnimationNames ("KerbalAnimationSuite/Config/animation_hierarchy");
 
 			InputLockManager.SetControlLock (ControlTypes.EVA_INPUT | ControlTypes.TIMEWARP | ControlTypes.VESSEL_SWITCHING, "KerbalAnimationSuite_Lock");
-
-			foreach (AnimationState state in evaPart.animation)
-			{
-				//Debug.Log (state.name + ": Layer: " + state.layer + ", WrapMode: " + state.wrapMode.ToString () + ", BlendMode: " + state.blendMode.ToString () + ", Enabled: " + state.enabled + ", Speed: " + state.speed + ", Length: " + state.length);
-			}
 
 			isAnimating = true;
 			windowOpen = true;
@@ -437,7 +431,7 @@ namespace KerbalAnimation
 					{
 						if (AnimationNames.ContainsKey (child.name))
 						{
-							animationClip.AddMixingTransform (child.name);
+							animationClip.AddMixingTransform (AnimationNames[child.name]);
 							addMTErrorText = "";
 							tempMTToAdd = "";
 						}
@@ -613,6 +607,13 @@ namespace KerbalAnimation
 					}
 					Debug.Log ("----- Event: " + evt.name + ": => " + (evt.GoToStateOnEvent != null ? evt.GoToStateOnEvent.name : "N/A") + " : " + evt.updateMode.ToString ());
 				}
+			}
+		}
+		void PrintAnimationStates()
+		{
+			foreach (AnimationState state in evaPart.animation)
+			{
+				Debug.Log (state.name + ": Layer: " + state.layer + ", WrapMode: " + state.wrapMode.ToString () + ", BlendMode: " + state.blendMode.ToString () + ", Enabled: " + state.enabled + ", Speed: " + state.speed + ", Length: " + state.length);
 			}
 		}
 
@@ -865,21 +866,23 @@ namespace KerbalAnimation
 				GUILayout.Label ("Save to: <color=white>/GameData/</color>");
 				tempSavePath = GUILayout.TextField (tempSavePath);
 				GUILayout.EndHorizontal ();
-				if (GUILayout.Button ("Save Animation"))
-				{
-					try
-					{
+				if (GUILayout.Button ("Save Animation")) {
+					try {
 						animationClip.Save (tempSavePath);
 						saveAnimErrorText = "";
-					}
-					catch
-					{
+					} catch {
 						saveAnimErrorText = "couldn't save animation to " + tempSavePath;
 					}
 				}
-				if(saveAnimErrorText != null && saveAnimErrorText != "")
-				{
+				if (saveAnimErrorText != null && saveAnimErrorText != "") {
 					GUILayout.Label ("<color=red>" + saveAnimErrorText + "</color>");
+				}
+
+				GUILayout.Space (10f);
+				if (GUILayout.Button ("Rebuild <color=orange>animation_hierarchy.dat</color>"))
+				{
+					PopulateAnimationNames ();
+					SaveAnimationNames ("KerbalAnimationSuite/animation_hierarchy");
 				}
 
 				GUILayout.EndScrollView ();
@@ -934,12 +937,38 @@ namespace KerbalAnimation
 		void RebuildAnimationClip()
 		{
 			Debug.Log ("Rebuilding clip");
-			var clip = animationClip.BuildAnimationClip ();
-			evaPart.animation.RemoveClip ("CustomClip");
-			evaPart.animation.AddClip (clip, "CustomClip");
-			foreach(var mt in animationClip.MixingTransforms)
+			int line = 0;
+			try
 			{
-				evaPart.animation ["CustomClip"].AddMixingTransform (evaPart.transform.Find(AnimationNames [mt]));
+				animationClip.BuildAnimationClip ();
+				line = 1;
+				animation.RemoveClip ("CustomClip");
+				line = 2;
+				animation.AddClip (animationClip, "CustomClip");
+				line = 3;
+				animation ["CustomClip"].layer = animationClip.Layer;
+				line = 4;
+				foreach(var mt in animationClip.MixingTransforms)
+				{
+					line = 5;
+					if (KerbalAnimationSuite.AnimationNames.ContainsKey (mt) && transform.Find (AnimationNames [mt]) != null)
+					{
+						line = 6;
+						animation ["CustomClip"].AddMixingTransform (transform.Find (AnimationNames [mt]));
+						line = 7;
+					}
+					else
+					{
+						line = 8;
+						Debug.LogError ("animation mixing transform " + mt + " from animation suite clip does not exist, or could not be found.");
+					}
+					line = 9;
+				}
+				line = 10;
+			}
+			catch
+			{
+				Debug.Log ("Line: " + line);
 			}
 		}
 		void SetAnimationTime(float normalizedTime, string animationName = "CustomClip")
@@ -1013,14 +1042,18 @@ namespace KerbalAnimation
 			}
 			node.Save (KSPUtil.ApplicationRootPath + "GameData/" + url + ".dat");
 		}
-		void LoadAnimationNames(string url)
+		void LoadAnimationNames()
 		{
-			ConfigNode node = ConfigNode.Load (KSPUtil.ApplicationRootPath + "GameData/" + url + ".dat");
+			Debug.Log ("Loading animation_hierarchy.dat...");
+			ConfigNode node = ConfigNode.Load (KSPUtil.ApplicationRootPath + "GameData/KerbalAnimationSuite/Config/animation_hierarchy.dat");
 			AnimationNames.Clear ();
 			foreach (ConfigNode.Value value in node.values)
 			{
+				if(debug)
+					Debug.Log ("Value: " + value.name + " = " + value.value);
 				AnimationNames.Add (value.name, value.value);
 			}
+			Debug.Log ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]: animation_hierarchy.dat was loaded");
 		}
 
 		bool hasHelmet = true;
