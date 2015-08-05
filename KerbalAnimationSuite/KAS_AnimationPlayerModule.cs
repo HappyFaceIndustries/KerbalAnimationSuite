@@ -11,7 +11,7 @@ namespace KerbalAnimation
 	{
 		void Start()
 		{
-			KerbalEVAUtility.AddPartModule ("kerbalEVA", "KAS_AnimationPlayerModule");
+			KerbalEVAUtility.AddPartModule ("KAS_AnimationPlayerModule");
 		}
 	}
 
