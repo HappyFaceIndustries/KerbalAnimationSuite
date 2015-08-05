@@ -48,6 +48,7 @@
     <Compile Include="KAS_AnimationPlayerModule.cs" />
     <Compile Include="KAS_AnimationClip.cs" />
     <Compile Include="API\KerbalAnimationClip.cs" />
+    <Compile Include="API\KerbalEVAUtility.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

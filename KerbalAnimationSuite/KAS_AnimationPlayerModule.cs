@@ -11,28 +11,7 @@ namespace KerbalAnimation
 	{
 		void Start()
 		{
-			AddModule ("kerbalEVA", "KAS_AnimationPlayerModule");
-			AddModule ("kerbalEVAfemale", "KAS_AnimationPlayerModule");
-
-			//KerbalAnimationClip clip = new KerbalAnimationClip ("KerbalAnimationSuite/Presets/Bleh");
-		}
-
-		void AddModule(string partName, string moduleName)
-		{
-			Debug.Log ("Adding" + moduleName + " to part " + partName);
-
-			foreach (var aPart in PartLoader.LoadedPartsList)
-			{
-				if (aPart.name != partName)
-					continue;
-
-				try
-				{
-					aPart.partPrefab.AddModule (moduleName);
-				}
-				catch {}
-				Debug.Log ("Added" + moduleName + " to part " + partName + " successfully");
-			}
+			KerbalEVAUtility.AddPartModule ("kerbalEVA", "KAS_AnimationPlayerModule");
 		}
 	}
 
