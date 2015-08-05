@@ -13,8 +13,9 @@ namespace KerbalAnimation
 		{
 			AddModule ("kerbalEVA", "KAS_AnimationPlayerModule");
 			AddModule ("kerbalEVAfemale", "KAS_AnimationPlayerModule");
-		}
 
+			//KerbalAnimationClip clip = new KerbalAnimationClip ("KerbalAnimationSuite/Presets/Bleh");
+		}
 
 		void AddModule(string partName, string moduleName)
 		{
@@ -48,7 +49,7 @@ namespace KerbalAnimation
 
 		private bool animationsLoaded = false;
 
-		private List<KAS_AnimationClip> Animations = new List<KAS_AnimationClip> ();
+		private List<KerbalAnimationClip> Animations = new List<KerbalAnimationClip> ();
 
 		public override void OnStart (StartState state)
 		{
@@ -127,9 +128,7 @@ namespace KerbalAnimation
 
 			foreach(var file in Directory.GetFiles(KSPUtil.ApplicationRootPath + "GameData/", "*.anim", SearchOption.AllDirectories))
 			{
-				Debug.Log ("Loading " + file);
-				KAS_AnimationClip clip = new KAS_AnimationClip ();
-				clip.Load (file);
+				KerbalAnimationClip clip = new KerbalAnimationClip (file, true);
 				Animations.Add (clip);
 			}
 			if (Animations.Count <= 0)

@@ -68,9 +68,11 @@ namespace KerbalAnimation
 		}
 
 		public string Name = "CustomClip";
+
 		public int Layer = 0;
 
 		public AnimationClip clip;
+
 		public float Duration
 		{
 			get{return tgtDuration;}
@@ -88,6 +90,7 @@ namespace KerbalAnimation
 		Dictionary<string, AnimationCurve> PositionZCurves = new Dictionary<string, AnimationCurve>();
 
 		public List<KAS_Keyframe> Keyframes = new List<KAS_Keyframe>();
+
 		public KAS_Keyframe LastKeyframe
 		{
 			get{return Keyframes [Keyframes.Count - 1];}
@@ -193,7 +196,7 @@ namespace KerbalAnimation
 			var clip = BuildAnimationClip ();
 			animation.RemoveClip (Name);
 			animation.AddClip (clip, Name);
-			//animation [Name].layer = Layer;
+			animation [Name].layer = Layer;
 			foreach(var mt in MixingTransforms)
 			{
 				if (/*KerbalAnimationSuite_Loader.AnimationNames.ContainsKey(mt) && transform.Find (KerbalAnimationSuite_Loader.AnimationNames [mt]) != null*/transform != null)
@@ -204,6 +207,7 @@ namespace KerbalAnimation
 		}
 
 
+		#region IO
 		public const int FileTypeVersion = 1;
 
 		/// <summary>
@@ -266,23 +270,23 @@ namespace KerbalAnimation
 
 			node.Save (path, "Saved " + DateTime.Now.ToString());
 		}
-		private void OptimizeKeyframeNode(ConfigNode keyframe)
-		{
-			foreach (string animationName in KerbalAnimationSuite.AnimationNames.Values)
-			{
-				bool isMixed = false;
-				foreach (var mt in MixingTransforms)
-				{
-					if (animationName.Contains (mt))
-						isMixed = true;
-				}
-
-				if (!isMixed)
-				{
-					keyframe.RemoveValue (animationName);
-				}
-			}
-		}
+//		private void OptimizeKeyframeNode(ConfigNode keyframe)
+//		{
+//			foreach (string animationName in KerbalAnimationSuite.AnimationNames.Values)
+//			{
+//				bool isMixed = false;
+//				foreach (var mt in MixingTransforms)
+//				{
+//					if (animationName.Contains (mt))
+//						isMixed = true;
+//				}
+//
+//				if (!isMixed)
+//				{
+//					keyframe.RemoveValue (animationName);
+//				}
+//			}
+//		}
 
 		/// <summary>
 		/// Loads an animation file from a URL relative to the /GameData/ folder. Does not require an extension in the url.
@@ -356,6 +360,7 @@ namespace KerbalAnimation
 				Debug.Log ("finally was hit <-- this is not a bad message");
 			}
 		}
+		#endregion
 	}
 
 	/// <summary>
