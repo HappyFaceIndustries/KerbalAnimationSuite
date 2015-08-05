@@ -357,25 +357,38 @@ public class KerbalAnimationClip
 
 		public float GetValue(string animationName, KAS_ValueType type)
 		{
-			switch (type)
+			try
 			{
-			case KAS_ValueType.RotW:
-				return RotationW [animationName];
-			case KAS_ValueType.RotX:
-				return RotationX [animationName];
-			case KAS_ValueType.RotY:
-				return RotationY [animationName];
-			case KAS_ValueType.RotZ:
-				return RotationZ [animationName];
-			case KAS_ValueType.PosX:
-				return PositionX [animationName];
-			case KAS_ValueType.PosY:
-				return PositionY [animationName];
-			case KAS_ValueType.PosZ:
-				return PositionZ [animationName];
-			default:
-				return 0f;
+				switch (type)
+				{
+				case KAS_ValueType.RotW:
+					return RotationW [animationName];
+				case KAS_ValueType.RotX:
+					return RotationX [animationName];
+				case KAS_ValueType.RotY:
+					return RotationY [animationName];
+				case KAS_ValueType.RotZ:
+					return RotationZ [animationName];
+				case KAS_ValueType.PosX:
+					return PositionX [animationName];
+				case KAS_ValueType.PosY:
+					return PositionY [animationName];
+				case KAS_ValueType.PosZ:
+					return PositionZ [animationName];
+				default:
+					return 0f;
+				}
 			}
+			catch(KeyNotFoundException e)
+			{
+				//ignore colliders
+				if (animationName.ToLower ().Contains ("collider"))
+					return 0f;
+
+				Debug.LogError ("key not found: " + animationName);
+				Debug.LogException (e);
+			}
+			return 0f;
 		}
 	}
 	private enum KAS_ValueType

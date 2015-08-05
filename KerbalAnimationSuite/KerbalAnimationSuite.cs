@@ -564,7 +564,14 @@ namespace KerbalAnimation
 
 		void UpdateAnimation()
 		{
-
+			if (Input.GetKey (KeyCode.LeftAlt) && Input.GetKeyDown (KeyCode.Minus))
+			{
+				Debug.Log ("evaPart: " + (evaPart == null ? "null" : "object"));
+				Debug.Log ("eva: " + (eva == null ? "null" : "object"));
+				Debug.Log ("joints01: " + (joints01 == null ? "null" : "object"));
+				Debug.Log ("AnimationNames: " + (AnimationNames == null ? "null" : "object"));
+				Debug.Log ("currentBoneTrns: " + (currentBoneTrns == null ? "null" : "object"));
+			}
 		}
 		List<KFSMState> GetEVAStates()
 		{
@@ -630,6 +637,9 @@ namespace KerbalAnimation
 		string loadAnimErrorText = "";
 		string tempSavePath = "";
 		string saveAnimErrorText = "";
+		string tempDurationString = "1";
+
+		ScreenMessage errorMessage = new ScreenMessage ("", 20000f, ScreenMessageStyle.UPPER_CENTER);
 
 		int animPage = 0;
 		int animPageCount = 2;
@@ -739,9 +749,7 @@ namespace KerbalAnimation
 						GUILayout.Space (20f);
 						GUILayout.BeginHorizontal ();
 						GUILayout.Label ("Animation Duration: ");
-						string duration = animationClip.Duration.ToString();
-						duration = GUILayout.TextField (duration);
-						animationClip.Duration = float.Parse (duration);
+						tempDurationString = GUILayout.TextField (tempDurationString);
 						GUILayout.EndHorizontal ();
 					}
 					else
@@ -882,7 +890,7 @@ namespace KerbalAnimation
 				if (GUILayout.Button ("Rebuild <color=orange>animation_hierarchy.dat</color>"))
 				{
 					PopulateAnimationNames ();
-					SaveAnimationNames ("KerbalAnimationSuite/animation_hierarchy");
+					SaveAnimationNames ("KerbalAnimationSuite/Config/animation_hierarchy");
 				}
 
 				GUILayout.EndScrollView ();
@@ -912,6 +920,8 @@ namespace KerbalAnimation
 
 				Debug.Log ("Playing...");
 				evaPart.animation.Play ("CustomClip");
+
+				ScreenMessages.PostScreenMessage (errorMessage);
 			}
 			if (isPlayingAnimation && GUILayout.Button ("Stop Animation"))
 			{
@@ -919,6 +929,7 @@ namespace KerbalAnimation
 				SetAnimationTime (1f);
 				Debug.Log ("Stopping...");
 				isPlayingAnimation = false;
+				ScreenMessages.RemoveMessage (errorMessage);
 			}
 
 			if (animPage < animPageCount - 1)
@@ -940,13 +951,29 @@ namespace KerbalAnimation
 			int line = 0;
 			try
 			{
+				try
+				{
+					animationClip.Duration = float.Parse (tempDurationString);
+				}
+				catch
+				{
+					tempDurationString = "1";
+					errorMessage.message = "<color=red>Invalid Duration value</color>";
+					animationClip.Duration = 1f;
+				}
 				animationClip.BuildAnimationClip ();
 				line = 1;
-				animation.RemoveClip ("CustomClip");
+				if(debug)
+				{
+					Debug.Log("animation: " + (evaPart.animation == null ? "null" : "object"));
+					Debug.Log("animationClip.clip: " + (animationClip.clip == null ? "null" : "object"));
+				}
+				if(evaPart.animation.GetClip("CustomClip") != null)
+					evaPart.animation.RemoveClip ("CustomClip");
 				line = 2;
-				animation.AddClip (animationClip, "CustomClip");
+				evaPart.animation.AddClip (animationClip, "CustomClip");
 				line = 3;
-				animation ["CustomClip"].layer = animationClip.Layer;
+				evaPart.animation ["CustomClip"].layer = animationClip.Layer;
 				line = 4;
 				foreach(var mt in animationClip.MixingTransforms)
 				{
@@ -954,7 +981,7 @@ namespace KerbalAnimation
 					if (KerbalAnimationSuite.AnimationNames.ContainsKey (mt) && transform.Find (AnimationNames [mt]) != null)
 					{
 						line = 6;
-						animation ["CustomClip"].AddMixingTransform (transform.Find (AnimationNames [mt]));
+						evaPart.animation ["CustomClip"].AddMixingTransform (transform.Find (AnimationNames [mt]));
 						line = 7;
 					}
 					else
@@ -966,9 +993,10 @@ namespace KerbalAnimation
 				}
 				line = 10;
 			}
-			catch
+			catch(Exception e)
 			{
-				Debug.Log ("Line: " + line);
+				Debug.LogError (" Error encountered: Line: " + line);
+				Debug.LogException (e);
 			}
 		}
 		void SetAnimationTime(float normalizedTime, string animationName = "CustomClip")
