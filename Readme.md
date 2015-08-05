@@ -1,3 +1,7 @@
+#Kerbal Animation Suite
+
+Forum thread: forum.kerbalspaceprogram.com/threads/130663
+
 KerbalAnimationSuite is a mod for Kerbal Space Program that allows you to animate your kerbals
 
 To install:
