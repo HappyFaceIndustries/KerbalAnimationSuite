@@ -1,11 +1,12 @@
-﻿<Properties StartupItem="KerbalAnimationSuite\KerbalAnimationSuite.csproj">
+﻿<Properties StartupItem="KerbalAnimationSuite\KerbalAnimationSuite.csproj" GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="KerbalAnimationSuite\KAS_AnimationClip.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="KerbalAnimationSuite\API\KerbalEVAUtility.cs">
     <Files>
       <File FileName="KerbalAnimationSuite\KAS_AnimationPlayerModule.cs" Line="1" Column="1" />
-      <File FileName="KerbalAnimationSuite\KerbalAnimationSuite.cs" Line="1" Column="1" />
-      <File FileName="KerbalAnimationSuite\KAS_AnimationClip.cs" Line="22" Column="22" />
-      <File FileName="KerbalAnimationSuite\API\KerbalAnimationClip.cs" Line="1" Column="1" />
+      <File FileName="KerbalAnimationSuite\KerbalAnimationSuite.cs" Line="5" Column="5" />
+      <File FileName="KerbalAnimationSuite\KAS_AnimationClip.cs" Line="23" Column="23" />
+      <File FileName="KerbalAnimationSuite\API\KerbalAnimationClip.cs" Line="4" Column="4" />
+      <File FileName="KerbalAnimationSuite\API\KerbalEVAUtility.cs" Line="45" Column="45" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
