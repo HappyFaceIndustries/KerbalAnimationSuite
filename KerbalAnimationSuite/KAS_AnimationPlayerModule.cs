@@ -48,7 +48,7 @@ namespace KerbalAnimation
 		{
 			if (KerbalAnimationSuite.Instance != null)
 			{
-				bool isAnimating = KerbalAnimationSuite.Instance.isAnimating;
+				bool isAnimating = KerbalAnimationSuite.Instance.IsAnimating;
 				Events ["PlayAnimation"].active = !isAnimating && animationsLoaded;
 				Events ["ReloadAnimations"].active = !isAnimating;
 				Fields ["SelectedAnimation"].guiActive = !isAnimating && animationsLoaded;

@@ -8,9 +8,12 @@ using UnityEngine;
 
 public class KerbalAnimationClip
 {
-	private static Dictionary<string, string> AnimationNames = null;
+	public static Dictionary<string, string> AnimationNames = null;
 
 	//constructors
+	public KerbalAnimationClip()
+	{
+	}
 	public KerbalAnimationClip(string url, bool fullPath = false)
 	{
 		if(!url.EndsWith(".anim"))
@@ -20,7 +23,7 @@ public class KerbalAnimationClip
 		ConfigNode node = ConfigNode.Load (url);
 		LoadAndBuild (node);
 	}
-	private void LoadAndBuild(ConfigNode node)
+	protected void LoadAndBuild(ConfigNode node)
 	{
 		if(AnimationNames == null)
 			LoadAnimationNames ();
@@ -28,7 +31,7 @@ public class KerbalAnimationClip
 		Load (node);
 		BuildAnimationClip ();
 	}
-	private void LoadAnimationNames()
+	protected void LoadAnimationNames()
 	{
 		foreach (var filePath in Directory.GetFiles(KSPUtil.ApplicationRootPath + "GameData/", "*animation_hierarchy*", SearchOption.AllDirectories))
 		{
@@ -54,10 +57,10 @@ public class KerbalAnimationClip
 	}
 
 	//private values
-	private string name;
-	private int layer = 0;
-	private float duration;
-	private AnimationClip clip;
+	protected string name;
+	protected int layer = 0;
+	protected float duration;
+	protected AnimationClip clip;
 
 	//public properties
 	/// <summary>
@@ -126,29 +129,29 @@ public class KerbalAnimationClip
 
 	//loading data
 	#region loading data
-	private List<KerbalKeyframe> Keyframes = new List<KerbalKeyframe>();
+	protected List<KerbalKeyframe> Keyframes = new List<KerbalKeyframe>();
 
-	private Dictionary<string, AnimationCurve> RotationWCurves = new Dictionary<string, AnimationCurve>();
-	private Dictionary<string, AnimationCurve> RotationXCurves = new Dictionary<string, AnimationCurve>();
-	private Dictionary<string, AnimationCurve> RotationYCurves = new Dictionary<string, AnimationCurve>();
-	private Dictionary<string, AnimationCurve> RotationZCurves = new Dictionary<string, AnimationCurve>();
-	private Dictionary<string, AnimationCurve> PositionXCurves = new Dictionary<string, AnimationCurve>();
-	private Dictionary<string, AnimationCurve> PositionYCurves = new Dictionary<string, AnimationCurve>();
-	private Dictionary<string, AnimationCurve> PositionZCurves = new Dictionary<string, AnimationCurve>();
+	protected Dictionary<string, AnimationCurve> RotationWCurves = new Dictionary<string, AnimationCurve>();
+	protected Dictionary<string, AnimationCurve> RotationXCurves = new Dictionary<string, AnimationCurve>();
+	protected Dictionary<string, AnimationCurve> RotationYCurves = new Dictionary<string, AnimationCurve>();
+	protected Dictionary<string, AnimationCurve> RotationZCurves = new Dictionary<string, AnimationCurve>();
+	protected Dictionary<string, AnimationCurve> PositionXCurves = new Dictionary<string, AnimationCurve>();
+	protected Dictionary<string, AnimationCurve> PositionYCurves = new Dictionary<string, AnimationCurve>();
+	protected Dictionary<string, AnimationCurve> PositionZCurves = new Dictionary<string, AnimationCurve>();
 
 	//mixing transforms
-	private List<string> MixingTransforms = new List<string>();
-	private void AddMixingTransform(string name)
+	protected List<string> MixingTransforms = new List<string>();
+	protected void AddMixingTransform(string name)
 	{
 		MixingTransforms.Add (name);
 	}
-	private void RemoveMixingTransform(string name)
+	protected void RemoveMixingTransform(string name)
 	{
 		if (MixingTransforms.Contains (name))
 			MixingTransforms.Remove (name);
 	}
 
-	private AnimationClip BuildAnimationClip()
+	protected AnimationClip BuildAnimationClip()
 	{
 		clip = new AnimationClip ();
 		clip.wrapMode = WrapMode.Loop;
@@ -210,7 +213,7 @@ public class KerbalAnimationClip
 	#region IO
 	public const int FileTypeVersion = 1;
 
-	private void Load(ConfigNode node)
+	protected void Load(ConfigNode node)
 	{
 		try
 		{
@@ -268,7 +271,7 @@ public class KerbalAnimationClip
 
 	//embedded types
 	#region emdedded types
-	private class KerbalKeyframe
+	public class KerbalKeyframe
 	{
 		public KerbalKeyframe(KerbalAnimationClip animClip)
 		{
@@ -391,7 +394,7 @@ public class KerbalAnimationClip
 			return 0f;
 		}
 	}
-	private enum KAS_ValueType
+	public enum KAS_ValueType
 	{
 		RotW, RotX, RotY, RotZ, PosX, PosY, PosZ
 	}

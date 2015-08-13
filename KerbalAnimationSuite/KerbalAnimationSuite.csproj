@@ -46,12 +46,24 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KerbalAnimationSuite.cs" />
     <Compile Include="KAS_AnimationPlayerModule.cs" />
-    <Compile Include="KAS_AnimationClip.cs" />
     <Compile Include="API\KerbalAnimationClip.cs" />
     <Compile Include="API\KerbalEVAUtility.cs" />
+    <Compile Include="GUI\Window.cs" />
+    <Compile Include="GUI\HierarchyWindow.cs" />
+    <Compile Include="Utils\DebugUtil.cs" />
+    <Compile Include="Utils\SelectedBone.cs" />
+    <Compile Include="Utils\SelectedKerbalEVA.cs" />
+    <Compile Include="Utils\ConfigurationUtils.cs" />
+    <Compile Include="GUI\ManipulationWindow.cs" />
+    <Compile Include="GUI\AnimationWindow.cs" />
+    <Compile Include="Utils\EditableAnimationClip.cs" />
+    <Compile Include="GUI\MasterWindow.cs" />
+    <Compile Include="GUI\Colors.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="API\" />
+    <Folder Include="GUI\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
 </Project>
