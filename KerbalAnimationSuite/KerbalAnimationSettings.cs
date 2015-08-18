@@ -27,17 +27,19 @@ namespace KerbalAnimation
 		{
 			ConfigNode node = ConfigNode.Load (Path);
 			if (node == null)
+			{
 				Save ();
-			node = ConfigNode.Load (Path);
+				node = ConfigNode.Load (Path);
+			}
 
-			if(node.HasValue("AllowEditorMusic"))
-				bool.TryParse (node.GetValue ("AllowMusicEditor"), out AllowEditorMusic);
+			if (node.HasValue ("AllowEditorMusic"))
+				bool.TryParse (node.GetValue ("AllowEditorMusic"), out AllowEditorMusic);
 		}
 		public void Save()
 		{
 			ConfigNode node = new ConfigNode ("KerbalAnimationSuite_Settings");
 
-			node.AddValue ("AllowEditorMusic", AllowEditorMusic);
+			node.AddValue ("AllowEditorMusic", AllowEditorMusic.ToString());
 
 			node.Save (Path);
 		}
