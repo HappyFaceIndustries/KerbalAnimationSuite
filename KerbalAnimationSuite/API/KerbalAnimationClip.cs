@@ -11,7 +11,7 @@ public class KerbalAnimationClip
 	public static Dictionary<string, string> AnimationNames = null;
 
 	//constructors
-	public KerbalAnimationClip()
+	protected KerbalAnimationClip()
 	{
 	}
 	public KerbalAnimationClip(string url, bool fullPath = false)
@@ -110,17 +110,23 @@ public class KerbalAnimationClip
 	/// <param name="transform">The Transform object to be used as the skeleton. Should be the transform property of any PartModule attached to a kerbalEVA/kerbalEVAfemale part</param>
 	public void Initialize(Animation animation, Transform transform)
 	{
+		Initialize (animation, transform, null);
+	}
+	protected void Initialize(Animation animation, Transform transform, string newName = null)
+	{
 		if (clip == null)
 		{
 			Debug.LogError ("clip is null. Cannot initialize animation " + (name == null ? "NULL" : name));
 			return;
 		}
 		animation.RemoveClip (Name);
+		if (newName != null)
+			name = newName;
 		animation.AddClip (clip, Name);
 		animation [Name].layer = Layer;
 		foreach(var mt in MixingTransforms)
 		{
-			if (/*KerbalAnimationSuite_Loader.AnimationNames.ContainsKey(mt) && transform.Find (KerbalAnimationSuite_Loader.AnimationNames [mt]) != null*/transform != null)
+			if (AnimationNames.ContainsKey(mt) && transform.Find (AnimationNames [mt]) != null && transform != null)
 				animation [Name].AddMixingTransform (transform.Find (AnimationNames [mt]));
 			else
 				Debug.LogError ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]: animation mixing transform " + mt + " from animation " + Name + " does not exist, or could not be found.");
@@ -261,7 +267,7 @@ public class KerbalAnimationClip
 			}
 			Debug.Log("KerbalAnimationClip " + this.name + " was loaded successfully.");
 		}
-		catch(KeyNotFoundException e)
+		catch(Exception e)
 		{
 			Debug.LogError ("ERROR ENCOUNTERED LOADING ANIMATION");
 			Debug.LogException (e);
@@ -301,6 +307,11 @@ public class KerbalAnimationClip
 			foreach (string name in AnimationNames.Values)
 			{
 				Transform t = transform.Find (name);
+
+				//ignore collider bones
+				if (name.ToLower ().Contains ("collider"))
+					continue;
+
 				if (t == null)
 					Debug.LogError ("[assembly: " + Assembly.GetExecutingAssembly ().GetName().Name + "]:" + "t is null at " + name);
 				Quaternion quatRot = t.localRotation;

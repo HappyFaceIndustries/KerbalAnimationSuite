@@ -11,13 +11,13 @@ namespace KerbalAnimation
 		{get; private set;}
 		public Vector3 Position
 		{
-			get{return Bone.position;}
-			set{Bone.position = value;}
+			get{return Bone.localPosition;}
+			set{Bone.localPosition = value;}
 		}
 		public Vector3 Rotation
 		{
-			get{return Bone.rotation.eulerAngles;}
-			set{Bone.rotation = Quaternion.Euler (value);}
+			get{return Bone.localRotation.eulerAngles;}
+			set{Bone.localRotation = Quaternion.Euler (value);}
 		}
 
 		public SelectedBone(string name)

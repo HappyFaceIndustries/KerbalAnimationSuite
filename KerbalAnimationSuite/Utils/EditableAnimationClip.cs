@@ -11,6 +11,12 @@ namespace KerbalAnimation
 		public SelectedKerbalEVA Kerbal
 		{get; private set;}
 
+		private string tempNewName = null;
+		public new string Name
+		{
+			get{if (tempNewName == null) tempNewName = base.name; return tempNewName;}
+			set{tempNewName = value;}
+		}
 		public new int Layer
 		{
 			get{return layer;}
@@ -20,6 +26,13 @@ namespace KerbalAnimation
 		{
 			get{return duration;}
 			set{duration = value;}
+		}
+
+		private WrapMode wrapMode;
+		public WrapMode WrapMode
+		{
+			get{return wrapMode;}
+			set{wrapMode = value;}
 		}
 
 		public EditableAnimationClip(SelectedKerbalEVA eva)
@@ -52,22 +65,29 @@ namespace KerbalAnimation
 		{
 			base.RemoveMixingTransform (mixingTransformName);
 		}
-
-		public new void Initialize()
+		public new List<string> MixingTransforms
 		{
-			base.Initialize (Kerbal.animation, Kerbal.transform);
+			get{return base.MixingTransforms;}
+		}
+
+		public void Initialize()
+		{
+			base.Initialize (Kerbal.animation, Kerbal.transform, tempNewName);
 		}
 		public new AnimationClip BuildAnimationClip()
 		{
 			var clip = base.BuildAnimationClip ();
-			clip.wrapMode = WrapMode.Loop;
+			clip.wrapMode = WrapMode;
 			return clip;
 		}
 
+		public new List<KerbalKeyframe> Keyframes
+		{
+			get{return base.Keyframes;}
+		}
 		public KerbalKeyframe CreateKeyframe(float normalizedTime)
 		{
 			KerbalKeyframe keyframe = new KerbalKeyframe (this);
-			keyframe.Write (Kerbal.Part.transform, normalizedTime);
 			Keyframes.Add (keyframe);
 			return keyframe;
 		}
@@ -88,7 +108,7 @@ namespace KerbalAnimation
 
 		public void SetAnimationTime(float normalizedTime)
 		{
-			if(Kerbal.animation.isPlaying)
+			if(Kerbal.IsAnimationPlaying)
 				Kerbal.animation [name].normalizedTime = normalizedTime;
 			else
 			{
@@ -119,8 +139,22 @@ namespace KerbalAnimation
 			Kerbal.animation.Stop (name);
 		}
 
-		//saving
+		//saving and loading
 		//TODO: move loading/saving code into a static class
+		public bool Load(string url)
+		{
+			if (!url.EndsWith (".anim"))
+				url += ".anim";
+			var fullPath = KSPUtil.ApplicationRootPath + "GameData/" + url;
+			var node = ConfigNode.Load (fullPath);
+			if (node == null)
+			{
+				Debug.LogError ("ConfigNode not found at " + url);
+				return false;
+			}
+			base.Load (node);
+			return true;
+		}
 		public void Save(string url)
 		{
 			string folderPath = KSPUtil.ApplicationRootPath + "GameData/" + url + "/";

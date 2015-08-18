@@ -11,11 +11,11 @@ namespace KerbalAnimation
 	{
 		void Start()
 		{
-			KerbalEVAUtility.AddPartModule ("KAS_AnimationPlayerModule");
+			KerbalEVAUtility.AddPartModule ("AnimationPlayerModule");
 		}
 	}
 
-	public class KAS_AnimationPlayerModule : PartModule
+	public class AnimationPlayerModule : PartModule
 	{
 		[UI_Cycle(stateNames = new string[]{""})]
 		[KSPField(isPersistant = false, guiName = "Selected Animation", guiActive = true)]
@@ -88,7 +88,7 @@ namespace KerbalAnimation
 			}
 			else
 			{
-				ScreenMessages.PostScreenMessage ("<color=red>Animation " + SelectedAnimationName + " does not exist</color>");
+				ScreenMessages.PostScreenMessage ("<color=" + Colors.ErrorMessageColor + ">Animation " + SelectedAnimationName + " does not exist</color>");
 			}
 		}
 		public void PlayAnimationOnce(string name)

@@ -13,7 +13,7 @@ namespace KerbalAnimation
 
 		public bool IsAnimating
 		{
-			get{return Kerbal != null ? Instance.Kerbal.IsAnimating : false;}
+			get{return Kerbal != null ? Kerbal.IsAnimating : false;}
 		}
 
 		public GUISkin skin = HighLogic.Skin;
@@ -21,12 +21,46 @@ namespace KerbalAnimation
 		public Dictionary<string, string> ReadableNames = new Dictionary<string, string>();
 		public Dictionary<string, string> AnimationNames = new Dictionary<string, string>();
 
-		public EditableAnimationClip AnimationClip;
+		private EditableAnimationClip _animationClip;
+		public EditableAnimationClip AnimationClip
+		{
+			get {return _animationClip;}
+			set
+			{
+				_animationClip = value;
+				OnNewAnimationClip.Fire (value);
+			}
+		}
 
-		public SelectedKerbalEVA Kerbal;
-		public SelectedBone CurrentBone;
+		private SelectedKerbalEVA _kerbal;
+		public SelectedKerbalEVA Kerbal
+		{
+			get{return _kerbal;}
+			set
+			{
+				_kerbal = value;
+				OnKerbalSelected.Fire (value);
+			}
+		}
+
+		private SelectedBone _currentBone;
+		public SelectedBone CurrentBone
+		{
+			get{return _currentBone;}
+			set
+			{
+				_currentBone = value;
+				OnBoneSelected.Fire (value);
+			}
+		}
+
+		//events
+		public EventData<SelectedBone> OnBoneSelected = new EventData<SelectedBone>("OnBoneSelected");
+		public EventData<SelectedKerbalEVA> OnKerbalSelected = new EventData<SelectedKerbalEVA>("OnKerbalEVASelected");
+		public EventData<EditableAnimationClip> OnNewAnimationClip = new EventData<EditableAnimationClip>("OnNewAnimationClip");
 
 		//GUI
+
 		//Windows
 		public MasterWindow Master;
 		public HierarchyWindow Hierarchy;
@@ -34,8 +68,7 @@ namespace KerbalAnimation
 		public AnimationWindow Animation;
 
 		//Button
-		private static bool ButtonAdded = false;
-		public static ApplicationLauncherButton Button;
+		private static ApplicationLauncherButton Button;
 
 		public bool ShowUI //set by pressing F2
 		{get; private set;}
@@ -52,8 +85,6 @@ namespace KerbalAnimation
 			Hierarchy = new HierarchyWindow ();
 			Manipulation = new ManipulationWindow ();
 			Animation = new AnimationWindow ();
-
-			AddApplicationLauncherButton ();
 		}
 
 		private void Start()
@@ -61,11 +92,24 @@ namespace KerbalAnimation
 			//load animation data
 			ConfigurationUtils.LoadAnimationNames ();
 			ConfigurationUtils.LoadReadableNames ();
+
+			//add GameEvents
+			GameEvents.onShowUI.Add (OnShowUI);
+			GameEvents.onHideUI.Add (OnHideUI);
+
+			//add AppLauncher button
+			var buttonTexture = GameDatabase.Instance.GetTexture ("KerbalAnimationSuite/Icons/button", false);
+			Button = ApplicationLauncher.Instance.AddModApplication (EnableAnimationSuite, DisableAnimationSuite, null, null, null, null, ApplicationLauncher.AppScenes.FLIGHT, buttonTexture);
 		}
 		private void OnDestroy()
 		{
+			//remove GameEvents
 			GameEvents.onShowUI.Remove (OnShowUI);
 			GameEvents.onHideUI.Remove (OnHideUI);
+
+			//remove AppLauncher button
+			if(Button != null)
+				ApplicationLauncher.Instance.RemoveModApplication(Button);
 		}
 		private void OnShowUI()
 		{
@@ -76,22 +120,15 @@ namespace KerbalAnimation
 			ShowUI = false;
 		}
 
-		private void AddApplicationLauncherButton ()
-		{
-			if (ButtonAdded)
-				return;
-
-			var buttonTexture = GameDatabase.Instance.GetTexture ("KerbalAnimationSuite/Icons/button", false);
-			Button = ApplicationLauncher.Instance.AddModApplication (EnableAnimationSuite, DisableAnimationSuite, null, null, null, null, ApplicationLauncher.AppScenes.FLIGHT, buttonTexture);
-			ButtonAdded = true;
-		}
-
 		public void EnableAnimationSuite()
 		{
 			var vessel = FlightGlobals.ActiveVessel;
 			if (vessel.evaController == null)
 			{
 				ScreenMessages.PostScreenMessage (new ScreenMessage ("<color=" + Colors.DefaultMessageColor + ">Active vessel must be an EVA to use the Animation Suite</color>", 3f, ScreenMessageStyle.UPPER_CENTER));
+
+				//set the button back to false
+				Button.SetFalse (false);
 				return;
 			}
 
@@ -100,17 +137,26 @@ namespace KerbalAnimation
 
 			if (!Kerbal.EnterAnimationMode ())
 			{
+				//wipe the state
+				Kerbal = null;
+				AnimationClip = null;
+				CurrentBone = null;
+
+				//set the button back to false if it failed
+				Button.SetFalse (false);
 				return;
 			}
 		}
-		public void DisableAnimationSuite()
+		public void DisableAnimationSuite ()
 		{
-			Kerbal.ExitAnimationMode ();
+			if (Kerbal != null)
+				Kerbal.ExitAnimationMode ();
 
+			//wipe the state
 			Kerbal = null;
 			AnimationClip = null;
+			CurrentBone = null;
 		}
-
 
 		void Update()
 		{
@@ -125,20 +171,22 @@ namespace KerbalAnimation
 
 		void OnGUI()
 		{
+			//don't draw when F2 is pressed
 			if (!ShowUI)
 				return;
-			if (Kerbal == null || !Kerbal.IsAnimating)
-				return;
 
-			GUI.skin = skin;
+			if (Kerbal != null && Kerbal.IsAnimating)
+			{
+				GUI.skin = skin;
 
-			Master.Draw ();
-			if (Master.HierarchyOpen)
-				Hierarchy.Draw ();
-			if (Master.ManipulationOpen)
-				Manipulation.Draw ();
-			if (Master.AnimationOpen)
-				Animation.Draw ();
+				Master.Draw ();
+				if (Master.HierarchyOpen && !Kerbal.IsAnimationPlaying && Animation.KeyframeSelected)
+					Hierarchy.Draw ();
+				if (Master.ManipulationOpen && !Kerbal.IsAnimationPlaying && Animation.KeyframeSelected)
+					Manipulation.Draw ();
+				if (Master.AnimationOpen)
+					Animation.Draw ();
+			}
 		}
 	}
 }

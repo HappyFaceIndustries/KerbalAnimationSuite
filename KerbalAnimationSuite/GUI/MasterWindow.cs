@@ -22,11 +22,11 @@ namespace KerbalAnimation
 			GUILayout.BeginVertical (skin.scrollView);
 
 			AnimationOpen = GUILayout.Toggle (AnimationOpen, "Animation", skin.button);
-			if (!Suite.Kerbal.IsAnimationPlaying)
+			if (!Suite.Kerbal.IsAnimationPlaying && Suite.Animation.KeyframeSelected)
 				HierarchyOpen = GUILayout.Toggle (HierarchyOpen, "Bone Hierarchy", skin.button);
 			else
 				GUILayout.Toggle (false, "Bone Hierarchy", skin.button);
-			if (!Suite.Kerbal.IsAnimationPlaying)
+			if (!Suite.Kerbal.IsAnimationPlaying && Suite.Animation.KeyframeSelected)
 				ManipulationOpen = GUILayout.Toggle (ManipulationOpen, "Manipulation", skin.button);
 			else
 				GUILayout.Toggle (false, "Manipulation", skin.button);
