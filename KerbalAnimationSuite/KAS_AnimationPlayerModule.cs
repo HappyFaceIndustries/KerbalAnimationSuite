@@ -119,7 +119,6 @@ namespace KerbalAnimation
 			foreach (var anim in Animations)
 			{
 				anim.Initialize (animation, transform);
-				animation [anim.Name].layer = 5;
 				names.Add (anim.Name);
 			}
 			if (Fields ["SelectedAnimation"].uiControlFlight is UI_Cycle)

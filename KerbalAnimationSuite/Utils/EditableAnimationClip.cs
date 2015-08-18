@@ -153,6 +153,8 @@ namespace KerbalAnimation
 				return false;
 			}
 			base.Load (node);
+			clip.name = base.name;
+			this.tempNewName = base.name;
 			return true;
 		}
 		public void Save(string url)
@@ -174,6 +176,7 @@ namespace KerbalAnimation
 			ConfigNode node = new ConfigNode ("KAS_Animation");
 			node.AddValue ("Name", Name);
 			node.AddValue ("Duration", Duration);
+			node.AddValue("Layer", Layer);
 
 			ConfigNode mtNode = new ConfigNode ("MIXING_TRANSFORMS");
 			foreach (var mt in MixingTransforms)

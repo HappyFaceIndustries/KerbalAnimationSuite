@@ -225,6 +225,10 @@ public class KerbalAnimationClip
 		{
 			this.name = node.GetValue ("Name");
 			this.duration = float.Parse(node.GetValue ("Duration"));
+			if(node.HasValue("Layer"))
+				this.layer = int.Parse(node.GetValue("Layer"));
+			else
+				this.layer = 5;
 
 			ConfigNode mtNode = node.GetNode ("MIXING_TRANSFORMS");
 			foreach (var mt in mtNode.GetValues("MixingTransform"))

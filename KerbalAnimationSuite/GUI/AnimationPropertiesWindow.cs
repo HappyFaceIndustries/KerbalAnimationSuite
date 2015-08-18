@@ -31,19 +31,24 @@ namespace KerbalAnimation
 		//Events
 		private void OnNewAnimationClip(EditableAnimationClip clip)
 		{
+			Debug.Log ("OnNewAnimationClip! " + clip.Name);
+
 			//set gui values
-			clip.Name = clip.Name;
 			if (textBoxValues.ContainsKey ("DurationNumberSelector"))
 				textBoxValues ["DurationNumberSelector"] = clip.Duration.ToString ("####0.0##");
+			else
+				textBoxValues.Add ("DurationNumberSelector", clip.Duration.ToString ("####0.0##"));
 			if (textBoxValues.ContainsKey ("LayerNumberSelector"))
 				textBoxValues ["LayerNumberSelector"] = clip.Layer.ToString ("####0");
+			else
+				textBoxValues.Add ("LayerNumberSelector", clip.Layer.ToString ("####0"));
 		}
 
 		protected override void DrawWindow ()
 		{
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label ("Name: ", GUILayout.Width(70f));
-			Suite.AnimationClip.Name = GUILayout.TextField (Suite.AnimationClip.Name, GUILayout.ExpandWidth(true));
+			Suite.AnimationClip.Name = GUILayout.TextField (Suite.AnimationClip.Name, GUILayout.Width(200f));
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
@@ -218,8 +223,8 @@ namespace KerbalAnimation
 			}
 			if (buttonPressed)
 			{
-				textBoxValues [uniqueName] = buttonValue.ToString ("####0");
 				buttonValue = Mathf.Clamp (buttonValue, min, max);
+				textBoxValues [uniqueName] = buttonValue.ToString ("####0");
 				GUI.FocusControl ("");
 			}
 
