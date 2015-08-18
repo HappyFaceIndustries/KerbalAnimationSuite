@@ -165,8 +165,8 @@ namespace KerbalAnimation
 			}
 			if (buttonPressed)
 			{
-				textBoxValues [uniqueName] = buttonValue.ToString ("####0.0##");
 				buttonValue = Mathf.Clamp (buttonValue, min, max);
+				textBoxValues [uniqueName] = buttonValue.ToString ("####0.0##");
 				GUI.FocusControl ("");
 			}
 
