@@ -30,6 +30,9 @@ namespace KerbalAnimation
 				ManipulationOpen = GUILayout.Toggle (ManipulationOpen, "Manipulation", skin.button);
 			else
 				GUILayout.Toggle (false, "Manipulation", skin.button);
+			GUILayout.Space (3f);
+
+			Suite.Settings.AllowEditorMusic = GUILayout.Toggle (Suite.Settings.AllowEditorMusic, "Play Music?");
 
 			GUILayout.EndVertical ();
 		}

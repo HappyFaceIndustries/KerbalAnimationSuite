@@ -60,6 +60,8 @@
     <Compile Include="GUI\MasterWindow.cs" />
     <Compile Include="GUI\Colors.cs" />
     <Compile Include="GUI\AnimationPropertiesWindow.cs" />
+    <Compile Include="Utils\MusicLogicWrapper.cs" />
+    <Compile Include="KerbalAnimationSettings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

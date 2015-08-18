@@ -31,6 +31,9 @@ namespace KerbalAnimation
 		//Events
 		private void OnNewAnimationClip(EditableAnimationClip clip)
 		{
+			if (clip == null)
+				return;
+
 			Debug.Log ("OnNewAnimationClip! " + clip.Name);
 
 			//set gui values
@@ -46,6 +49,12 @@ namespace KerbalAnimation
 
 		protected override void DrawWindow ()
 		{
+			if (Suite.AnimationClip == null)
+			{
+				GUILayout.Label ("<color=" + Colors.ErrorMessageColor + ">ERROR: AnimationClip is null!");
+				return;
+			}
+
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label ("Name: ", GUILayout.Width(70f));
 			Suite.AnimationClip.Name = GUILayout.TextField (Suite.AnimationClip.Name, GUILayout.Width(200f));

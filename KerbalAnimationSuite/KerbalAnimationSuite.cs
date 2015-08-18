@@ -21,6 +21,7 @@ namespace KerbalAnimation
 		public Dictionary<string, string> ReadableNames = new Dictionary<string, string>();
 		public Dictionary<string, string> AnimationNames = new Dictionary<string, string>();
 
+		//main values
 		private EditableAnimationClip _animationClip;
 		public EditableAnimationClip AnimationClip
 		{
@@ -54,10 +55,27 @@ namespace KerbalAnimation
 			}
 		}
 
-		//events
+		//Settings
+		public KerbalAnimationSettings Settings;
+
+		//Events
 		public EventData<SelectedBone> OnBoneSelected = new EventData<SelectedBone>("OnBoneSelected");
 		public EventData<SelectedKerbalEVA> OnKerbalSelected = new EventData<SelectedKerbalEVA>("OnKerbalEVASelected");
 		public EventData<EditableAnimationClip> OnNewAnimationClip = new EventData<EditableAnimationClip>("OnNewAnimationClip");
+
+		//Music
+		public MusicLogicWrapper MusicWrapper;
+		public bool MusicIsPlaying
+		{
+			get {return MusicWrapper.MusicIsPlaying;}
+			set
+			{
+				if (value && Settings.AllowEditorMusic)
+					MusicWrapper.StartPlaylist (0.5f);
+				else
+					MusicWrapper.StopPlaylist (0.5f);
+			}
+		}
 
 		//GUI
 
@@ -80,6 +98,9 @@ namespace KerbalAnimation
 			//set defaults
 			ShowUI = true;
 
+			//load settings
+			Settings = new KerbalAnimationSettings ();
+
 			//instantiate windows
 			Master = new MasterWindow ();
 			Hierarchy = new HierarchyWindow ();
@@ -92,6 +113,9 @@ namespace KerbalAnimation
 			//load animation data
 			ConfigurationUtils.LoadAnimationNames ();
 			ConfigurationUtils.LoadReadableNames ();
+
+			//music
+			MusicWrapper = new MusicLogicWrapper ();
 
 			//add GameEvents
 			GameEvents.onShowUI.Add (OnShowUI);
@@ -146,9 +170,13 @@ namespace KerbalAnimation
 				Button.SetFalse (false);
 				return;
 			}
+
+			MusicIsPlaying = true;
 		}
 		public void DisableAnimationSuite ()
 		{
+			MusicIsPlaying = false;
+
 			if (Kerbal != null)
 				Kerbal.ExitAnimationMode ();
 
@@ -166,6 +194,17 @@ namespace KerbalAnimation
 				Hierarchy.Update ();
 				Manipulation.Update ();
 				Animation.Update ();
+
+				//stop music if setting is set to false, and music is still playing
+				if (!Settings.AllowEditorMusic && MusicWrapper.MusicIsPlaying)
+				{
+					MusicIsPlaying = false;
+				}
+				//start music if setting is set to true, and music is not playing
+				if (Settings.AllowEditorMusic && !MusicWrapper.MusicIsPlaying)
+				{
+					MusicIsPlaying = true;
+				}
 			}
 		}
 
