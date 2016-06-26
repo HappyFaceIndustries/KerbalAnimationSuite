@@ -28,6 +28,7 @@ namespace KerbalAnimation
 
 		public void Draw()
 		{
+			GUI.skin = skin;
 			OnGUI.Invoke ();
 		}
 		private void DrawMainWindow()

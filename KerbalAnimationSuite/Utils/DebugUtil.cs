@@ -48,15 +48,29 @@ namespace KerbalAnimation
 				Debug.Log (state.name + ": Layer: " + state.layer + ", WrapMode: " + state.wrapMode.ToString () + ", BlendMode: " + state.blendMode.ToString () + ", Enabled: " + state.enabled + ", Speed: " + state.speed + ", Length: " + state.length);
 			}
 		}
-		public static void PrintTransform(Transform t, int level = 0)
+		public static void PrintTransform(Transform t, bool printComponents = false, int level = 0)
 		{
 			string indent = "";
 			for(int i = 0; i < level; i++)
 				indent += "   |";
 			Debug.Log (indent + t.name);
+			if (printComponents)
+				PrintComponents (t, level);
 			foreach (Transform child in t)
 			{
-				PrintTransform (child, level + 1);
+				PrintTransform (child, printComponents, level + 1);
+			}
+		}
+		public static void PrintComponents(Transform t, int level = 0)
+		{
+			string indent = "";
+			for(int i = 0; i < level; i++)
+				indent += "   |";
+			indent += " - ";
+			foreach (var component in t.GetComponents<Component>())
+			{
+				if (component.GetType () != typeof(Transform))
+					Debug.Log (indent + component.GetType ().Name);
 			}
 		}
 	}

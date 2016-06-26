@@ -39,7 +39,7 @@ namespace KerbalAnimation
 
 				if (GUILayout.Button ("Print Hierarchy"))
 				{
-					DebugUtil.PrintTransform (Suite.Kerbal.Part.transform, 0);
+					DebugUtil.PrintTransform (Suite.Kerbal.Part.transform);
 				}
 			}
 			else
