@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle ("KerbalAnimationSuite")]
 [assembly: AssemblyDescription ("")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("")]
+[assembly: AssemblyCompany ("HappyFaceIndustries")]
 [assembly: AssemblyProduct ("")]
-[assembly: AssemblyCopyright ("Happyface Industries")]
+[assembly: AssemblyCopyright ("")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 
@@ -17,7 +17,7 @@ using System.Runtime.CompilerServices;
 // The form "{Major}.{Minor}.*" will automatically update the build and revision,
 // and "{Major}.{Minor}.{Build}.*" will update just the revision.
 
-[assembly: AssemblyVersion ("1.1.3.2")]
+[assembly: AssemblyVersion ("1.2.0.0")]
 
 [assembly: KSPAssembly("KerbalAnimationSuite", 1, 1)]
 
