@@ -130,6 +130,7 @@ namespace KerbalAnimation
 			{
 				//set defaults
 				clip.WrapMode = WrapMode.ClampForever;
+				clip.Duration = 1f;
 
 				UpdateAnimationClip ();
 			}

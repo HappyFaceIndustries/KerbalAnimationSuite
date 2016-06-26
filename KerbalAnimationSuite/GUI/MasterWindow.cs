@@ -9,7 +9,7 @@ namespace KerbalAnimation
 		{
 			AllowDrag = false;
 			ExpandHeight = true;
-			WindowRect = new Rect (Screen.width - 250f, 50f, 250f, 0f); //height is zero because it expands
+			WindowRect = new Rect (Screen.width - 295f, 25f, 250f, 0f); //height is zero because it expands
 			WindowTitle = "Kerbal Animation Suite";
 		}
 

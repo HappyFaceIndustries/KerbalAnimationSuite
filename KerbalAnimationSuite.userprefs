@@ -1,18 +1,20 @@
 ﻿<Properties StartupItem="KerbalAnimationSuite\KerbalAnimationSuite.csproj" GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="KerbalAnimationSuite\Utils\EditableAnimationClip.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="KerbalAnimationSuite\KerbalDebugging.cs">
     <Files>
-      <File FileName="KerbalAnimationSuite\KAS_AnimationPlayerModule.cs" Line="37" Column="37" />
-      <File FileName="KerbalAnimationSuite\API\KerbalAnimationClip.cs" Line="34" Column="34" />
-      <File FileName="KerbalAnimationSuite\Utils\EditableAnimationClip.cs" Line="4" Column="4" />
-      <File FileName="KerbalAnimationSuite\KerbalAnimationSuite.cs" Line="12" Column="12" />
-      <File FileName="KerbalAnimationSuite\Utils\SelectedKerbalEVA.cs" Line="24" Column="24" />
-      <File FileName="KerbalAnimationSuite\Utils\SelectedBone.cs" Line="2" Column="2" />
-      <File FileName="KerbalAnimationSuite\GUI\AnimationWindow.cs" Line="34" Column="34" />
-      <File FileName="KerbalAnimationSuite\GUI\AnimationPropertiesWindow.cs" Line="7" Column="7" />
+      <File FileName="KerbalAnimationSuite\AnimationPlayerModule.cs" Line="101" Column="6" />
+      <File FileName="KerbalAnimationSuite\GUI\AnimationPlayerWindow.cs" Line="18" Column="17" />
+      <File FileName="KerbalAnimationSuite\Utils\EditableAnimationClip.cs" Line="1" Column="1" />
+      <File FileName="KerbalAnimationSuite\KerbalAnimationSuite.cs" Line="21" Column="54" />
+      <File FileName="KerbalAnimationSuite\Utils\SelectedKerbalEVA.cs" Line="1" Column="1" />
+      <File FileName="KerbalAnimationSuite\GUI\AnimationWindow.cs" Line="1" Column="1" />
+      <File FileName="KerbalAnimationSuite\GUI\AnimationPropertiesWindow.cs" Line="1" Column="1" />
       <File FileName="KerbalAnimationSuite\GUI\HierarchyWindow.cs" Line="1" Column="1" />
-      <File FileName="KerbalAnimationSuite\GUI\ManipulationWindow.cs" Line="41" Column="41" />
-      <File FileName="KerbalAnimationSuite\GUI\Colors.cs" Line="40" Column="40" />
+      <File FileName="KerbalAnimationSuite\GUI\ManipulationWindow.cs" Line="1" Column="1" />
+      <File FileName="KerbalAnimationSuite\GUI\MasterWindow.cs" Line="1" Column="1" />
+      <File FileName="KerbalAnimationSuite\KerbalDebugging.cs" Line="64" Column="49" />
+      <File FileName="KerbalAnimationSuite\Utils\DebugUtil.cs" Line="1" Column="1" />
+      <File FileName="KerbalAnimationSuite\GUI\GUIHider.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

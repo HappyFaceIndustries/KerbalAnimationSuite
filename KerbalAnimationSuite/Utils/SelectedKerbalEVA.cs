@@ -12,8 +12,18 @@ namespace KerbalAnimation
 		{get{return Kerbal.fsm;}}
 		public Part Part
 		{get{return Kerbal.part;}}
+		private Animation _animation;
 		public Animation animation
-		{get{return Kerbal.animation;}}
+		{
+			get
+			{
+				if (_animation == null)
+				{
+					_animation = Kerbal.GetComponent<Animation> ();
+				}
+				return _animation;
+			}
+		}
 		public Transform transform
 		{get{return Part.transform;}}
 
@@ -88,7 +98,7 @@ namespace KerbalAnimation
 			//check if we can animate
 			if (TimeWarp.CurrentRate != 1f)
 			{
-				ScreenMessages.PostScreenMessage (new ScreenMessage("<color=" + Colors.DefaultMessageColor + ">You must not be in time warp to animate</color>", 2.5f, ScreenMessageStyle.UPPER_CENTER), false);
+				ScreenMessages.PostScreenMessage ("<color=" + Colors.DefaultMessageColor + ">You must not be in time warp to animate</color>", 2.5f, ScreenMessageStyle.UPPER_CENTER);
 				TimeWarp.SetRate (0, true);
 				return false;
 			}
@@ -102,13 +112,13 @@ namespace KerbalAnimation
 				else
 				{
 					Debug.LogError ("failed to run event: Enter KAS_Animation");
-					ScreenMessages.PostScreenMessage (new ScreenMessage("<color=" + Colors.ErrorMessageColor + ">Failed to open Kerbal Animation Suite!</color>", 2.5f, ScreenMessageStyle.UPPER_CENTER), false);
+					ScreenMessages.PostScreenMessage ("<color=" + Colors.ErrorMessageColor + ">Failed to open Kerbal Animation Suite!</color>", 2.5f, ScreenMessageStyle.UPPER_CENTER);
 					return false;
 				}
 			}
 			else
 			{
-				ScreenMessages.PostScreenMessage (new ScreenMessage("<color=" + Colors.DefaultMessageColor + ">Kerbal must be standing on ground to animate</color>", 2.5f, ScreenMessageStyle.UPPER_CENTER), false);
+				ScreenMessages.PostScreenMessage ("<color=" + Colors.DefaultMessageColor + ">Kerbal must be standing on ground to animate</color>", 2.5f, ScreenMessageStyle.UPPER_CENTER);
 				return false;
 			}
 

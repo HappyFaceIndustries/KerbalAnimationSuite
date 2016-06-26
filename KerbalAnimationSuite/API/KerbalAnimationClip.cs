@@ -11,16 +11,28 @@ public class KerbalAnimationClip
 	public static Dictionary<string, string> AnimationNames = null;
 
 	//constructors
-	protected KerbalAnimationClip()
+	public KerbalAnimationClip()
 	{
 	}
-	public KerbalAnimationClip(string url, bool fullPath = false)
+
+	//loading
+	public void LoadFromURL(string url)
 	{
 		if(!url.EndsWith(".anim"))
 			url += ".anim";
-		if (!fullPath)
-			url = KSPUtil.ApplicationRootPath + "GameData/" + url;
-		ConfigNode node = ConfigNode.Load (url);
+		string fullPath = KSPUtil.ApplicationRootPath + "GameData/" + url;
+		ConfigNode node = ConfigNode.Load (fullPath);
+		LoadAndBuild (node);
+	}
+	public void LoadFromPath(string fullPath)
+	{
+		if(!fullPath.EndsWith(".anim"))
+			fullPath += ".anim";
+		ConfigNode node = ConfigNode.Load (fullPath);
+		LoadAndBuild (node);
+	}
+	public void LoadFromConfig(ConfigNode node)
+	{
 		LoadAndBuild (node);
 	}
 	protected void LoadAndBuild(ConfigNode node)
@@ -160,6 +172,7 @@ public class KerbalAnimationClip
 	protected AnimationClip BuildAnimationClip()
 	{
 		clip = new AnimationClip ();
+		clip.legacy = true;
 		clip.wrapMode = WrapMode.Loop;
 
 		//populate dictionaries with curves

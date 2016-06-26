@@ -2,7 +2,11 @@
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+
+using KSP.UI.Screens;
+
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace KerbalAnimation
 {
@@ -88,15 +92,9 @@ namespace KerbalAnimation
 		//Button
 		private static ApplicationLauncherButton Button;
 
-		public bool ShowUI //set by pressing F2
-		{get; private set;}
-
 		private void Awake()
 		{
 			Instance = this;
-
-			//set defaults
-			ShowUI = true;
 
 			//load settings
 			Settings = new KerbalAnimationSettings ();
@@ -117,31 +115,16 @@ namespace KerbalAnimation
 			//music
 			MusicWrapper = new MusicLogicWrapper ();
 
-			//add GameEvents
-			GameEvents.onShowUI.Add (OnShowUI);
-			GameEvents.onHideUI.Add (OnHideUI);
-
 			//add AppLauncher button
 			var buttonTexture = GameDatabase.Instance.GetTexture ("KerbalAnimationSuite/Icons/button", false);
 			Button = ApplicationLauncher.Instance.AddModApplication (EnableAnimationSuite, DisableAnimationSuite, null, null, null, null, ApplicationLauncher.AppScenes.FLIGHT, buttonTexture);
 		}
 		private void OnDestroy()
 		{
-			//remove GameEvents
-			GameEvents.onShowUI.Remove (OnShowUI);
-			GameEvents.onHideUI.Remove (OnHideUI);
 
 			//remove AppLauncher button
 			if(Button != null)
 				ApplicationLauncher.Instance.RemoveModApplication(Button);
-		}
-		private void OnShowUI()
-		{
-			ShowUI = true;
-		}
-		private void OnHideUI()
-		{
-			ShowUI = false;
 		}
 
 		public void EnableAnimationSuite()
@@ -211,13 +194,11 @@ namespace KerbalAnimation
 		void OnGUI()
 		{
 			//don't draw when F2 is pressed
-			if (!ShowUI)
+			if (!GUIHider.ShowUI)
 				return;
 
 			if (Kerbal != null && Kerbal.IsAnimating)
 			{
-				GUI.skin = skin;
-
 				Master.Draw ();
 				if (Master.HierarchyOpen && !Kerbal.IsAnimationPlaying && Animation.KeyframeSelected)
 					Hierarchy.Draw ();
